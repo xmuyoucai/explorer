@@ -17,6 +17,16 @@
     <top>
         <FlowPane prefHeight="30.0" BorderPane.alignment="CENTER">
             <children>
+            <TextField fx:id="fieldHost" editable="false" prefHeight="23.0" prefWidth="109.0" text="">
+               <FlowPane.margin>
+                  <Insets right="2.0" />
+               </FlowPane.margin>
+            </TextField>
+            <TextField fx:id="fieldPort" editable="false" prefHeight="23.0" prefWidth="44.0" text="">
+               <FlowPane.margin>
+                  <Insets right="2.0" />
+               </FlowPane.margin>
+            </TextField>
             <TextField fx:id="fieldPattern" text="*">
                <FlowPane.margin>
                   <Insets right="2.0" />

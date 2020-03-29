@@ -25,9 +25,23 @@ public class RedisController implements Initializable {
     @FXML
     private TextField fieldPattern;
 
+    @FXML
+    private TextField fieldHost;
+
+    @FXML
+    private TextField fieldPort;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         log.info("Redis界面控制器初始化 ...");
+
+        String redisConf = Cfg.PROPERTIES.getProperty("redis.conf");
+        if(Strings.isNullOrEmpty(redisConf)){
+            return;
+        }
+        String[] arr = redisConf.split(":");
+        fieldHost.setText(arr[0]);
+        fieldPort.setText(arr[1]);
 
         String[][] tableCfg = new String[][]{{"键", "key", "300"}, {"类型", "type", "50"}, {"数量", "count", "50"}, {"值", "value", "900"}};
         for (String[] columnCfg : tableCfg) {
@@ -46,12 +60,7 @@ public class RedisController implements Initializable {
             FxUtils.error("请输入匹配字符串");
             return;
         }
-        String redisConf = Cfg.PROPERTIES.getProperty("redis.conf");
-        if(Strings.isNullOrEmpty(redisConf)){
-            return;
-        }
-        String[] arr = redisConf.split(":");
-        List<RJedis.Item> items = new RJedis(pattern, arr[0], Integer.parseInt(arr[1])).getItems();
+        List<RJedis.Item> items = new RJedis(pattern, fieldHost.getText(), Integer.parseInt(fieldPort.getText())).getItems();
         redisTable.setItems(FXCollections.observableArrayList(items));
     }
 }
