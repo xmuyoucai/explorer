@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<MenuBar opacity="0.5" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/8"
+         xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.muyoucai.controller.MenuController">
+    <menus>
+        <Menu mnemonicParsing="false" text="File">
+            <items>
+                <RadioMenuItem mnemonicParsing="false" text="111"/>
+                <CheckMenuItem mnemonicParsing="false" text="2222"/>
+                <SeparatorMenuItem mnemonicParsing="false"/>
+                <MenuItem mnemonicParsing="false" text="Close"/>
+            </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Edit">
+            <items>
+                <MenuItem fx:id="deleteMenuItem" mnemonicParsing="false" onAction="#click" text="Delete"/>
+            </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+            <items>
+                <MenuItem mnemonicParsing="false" text="About"/>
+            </items>
+        </Menu>
+    </menus>
+</MenuBar>

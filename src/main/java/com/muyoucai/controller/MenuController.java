@@ -9,7 +9,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 @Slf4j
-public class HomeController implements Initializable {
+public class MenuController implements Initializable {
 
     @FXML
     private MenuItem deleteMenuItem;
@@ -21,7 +21,7 @@ public class HomeController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        log.info("主界面控制器初始化 ...");
+        log.info("菜单控制器初始化 ...");
     }
 
 }
