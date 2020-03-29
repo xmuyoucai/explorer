@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TableColumnBase;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
@@ -61,6 +62,10 @@ public class ZookeeperController implements Initializable {
 
             table.setRoot(hideRoot);
             table.setShowRoot(false);
+
+            table.setTableMenuButtonVisible(true);
+
+            table.getSelectionModel().selectFirst();
 
             String[][] tableCfg = new String[][]{{"名称", "name", "300"}, {"路径", "path", "300"}, {"数据", "data", "700"}};
             for (String[] columnCfg : tableCfg) {

@@ -10,10 +10,7 @@
     <menus>
         <Menu mnemonicParsing="false" text="文件">
             <items>
-                <RadioMenuItem mnemonicParsing="false" text="111" />
-                <CheckMenuItem mnemonicParsing="false" text="2222" />
-                <SeparatorMenuItem mnemonicParsing="false" />
-                <MenuItem mnemonicParsing="false" text="Close" />
+                <MenuItem mnemonicParsing="false" onAction="#switchTo" text="首页" />
             </items>
         </Menu>
         <Menu mnemonicParsing="false" text="工具">
@@ -22,14 +19,9 @@
                 <MenuItem mnemonicParsing="false" onAction="#switchTo" text="Zookeeper" />
             </items>
         </Menu>
-        <Menu disable="true" mnemonicParsing="false" text="编辑">
-            <items>
-                <MenuItem fx:id="deleteMenuItem" mnemonicParsing="false" onAction="#switchTo" text="Delete" />
-            </items>
-        </Menu>
         <Menu mnemonicParsing="false" text="帮助">
             <items>
-                <MenuItem mnemonicParsing="false" text="About" />
+                <MenuItem mnemonicParsing="false" text="关于" />
             </items>
         </Menu>
     </menus>

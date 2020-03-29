@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
@@ -11,8 +12,10 @@
     <center>
         <HBox prefWidth="1300.0" BorderPane.alignment="TOP_LEFT">
             <children>
-                <TreeTableView fx:id="table" prefWidth="1300.0"
-                               style="-fx-background-image: url('/img/bg.jpg'); -fx-background-position: center; -fx-background-size: 1300 768;"/>
+                <TreeTableView fx:id="table" prefWidth="1300.0" style="-fx-background-image: url('/img/bg.jpg'); -fx-background-position: center; -fx-background-size: 1300 768;">
+               <effect>
+                  <InnerShadow />
+               </effect></TreeTableView>
             </children>
         </HBox>
     </center>

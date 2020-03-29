@@ -34,6 +34,9 @@ public class MenuController implements Initializable {
                 if("Zookeeper".equals(text)){
                     EplApp.EPL.switchTo(View.ZOOKEEPER);
                 }
+                if("首页".equals(text)){
+                    EplApp.EPL.switchTo(View.HOME);
+                }
             }
 
         } catch (IOException e) {
