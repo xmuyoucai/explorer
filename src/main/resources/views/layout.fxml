@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane opacity="0.5" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/8"
+<BorderPane opacity="0.5" BorderPane.alignment="TOP_LEFT" xmlns="http://javafx.com/javafx/8"
             prefHeight="1355.0" prefWidth="760.0"
             style="-fx-background-image: url('/img/bgb.jpg'); -fx-background-position: center; -fx-background-size: 1366 768;">
 </BorderPane>

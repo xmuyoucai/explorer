@@ -38,7 +38,7 @@ public class Epl {
         log.info("加载主菜栏 ...");
         root.setTop(FxUtils.load(View.MENU.getFxml()));
 
-        switchTo(View.HOME);
+        switchTo(View.ZOOKEEPER);
 
         log.info("初始化场景 ...");
         primaryStage.setScene(new Scene(root, Cfg.WIDTH, Cfg.HEIGHT));
