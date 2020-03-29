@@ -34,12 +34,22 @@ public class ZooCtrl {
         }
     }
 
-    public static void fetchData(Node node) throws KeeperException, InterruptedException, IOException {
-        connect("120.78.200.102:2181");
+    public static Node fetchData(String address) throws KeeperException, InterruptedException, IOException {
+        ZooKeeper zoo = new ZooKeeper(address, 5000, new ZooWatcher());
+        Node node = new Node("/", "/");
+        fetchData(node, zoo);
+        return node;
+    }
+
+    public static void fetchData(Node node, ZooKeeper zoo) throws KeeperException, InterruptedException, IOException {
         try {
             log.info("path : {}", node.getPath());
-            node.setData(String.valueOf(zoo.getData(node.getPath(), false, new Stat())));
-
+            byte[] bytes = zoo.getData(node.getPath(), false, null);
+            if(bytes != null){
+                node.setData(new String(zoo.getData(node.getPath(), false, null)));
+            } else {
+                node.setData("");
+            }
             List<String> children = zoo.getChildren(node.getPath(), false);
             if(!CollectionKit.isEmpty(children)){
                 log.info("children : {}", JSON.toJSONString(children));
@@ -50,7 +60,7 @@ public class ZooCtrl {
             e.printStackTrace();
         }
         for (Node child : node.getChildren()) {
-            fetchData(child);
+            fetchData(child, zoo);
         }
     }
 
@@ -60,8 +70,9 @@ public class ZooCtrl {
             path = String.format("/%s", node);
         } else {
             path = String.format("%s/%s", parent, node);
+            node = "/" + node;
         }
-        return new Node("/" + node, path);
+        return new Node(node, path);
     }
 
     @Getter

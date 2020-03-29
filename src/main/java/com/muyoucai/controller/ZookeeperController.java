@@ -41,16 +41,17 @@ public class ZookeeperController implements Initializable {
         log.info("Zookeeper界面控制器初始化 ...");
 
         try {
-            ZooCtrl.Node root = new ZooCtrl.Node("/","/");
-            ZooCtrl.fetchData(root);
+            ZooCtrl.Node root = new ZooCtrl.Node("120.78.200.102:2181",null);
+            root.getChildren().add(ZooCtrl.fetchData(root.getNode()));
             log.info(JSON.toJSONString(root));
             TreeItem<ZooCtrl.Node> treeItem = parse(root);
             log.info("data : {}", JSON.toJSONString(treeItem));
             table.setRoot(treeItem);
 
-            String[][] tableCfg = new String[][]{{"路径", "node"},{"数据", "data"}};
+            String[][] tableCfg = new String[][]{{"路径", "node", "300"},{"数据", "data", "1000"}};
             for (String[] columnCfg : tableCfg) {
                 TreeTableColumn<ZooCtrl.Node, String> column = new TreeTableColumn<>(columnCfg[0]);
+                column.setPrefWidth(Integer.parseInt(columnCfg[2]));
                 column.setCellValueFactory(new TreeItemPropertyValueFactory<>(columnCfg[1]));
                 table.getColumns().add(column);
             }
@@ -62,6 +63,7 @@ public class ZookeeperController implements Initializable {
 
     private TreeItem<ZooCtrl.Node> parse(ZooCtrl.Node node){
         TreeItem<ZooCtrl.Node> item = new TreeItem<>(node);
+        item.setExpanded(true);
         for (ZooCtrl.Node child : node.getChildren()) {
             item.getChildren().add(parse(child));
         }
