@@ -1,29 +1,20 @@
 package com.muyoucai.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.google.common.collect.Lists;
-import com.jfoenix.controls.JFXTreeTableView;
-import com.jfoenix.controls.JFXTreeView;
-import com.muyoucai.manager.ZooCtrl;
+import com.muyoucai.manager.Zoo;
+import com.muyoucai.util.CollectionKit;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.zookeeper.KeeperException;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -41,17 +32,17 @@ public class ZookeeperController implements Initializable {
         log.info("Zookeeper界面控制器初始化 ...");
 
         try {
-            ZooCtrl.Node root = new ZooCtrl.Node("120.78.200.102:2181",null);
-            root.getChildren().add(ZooCtrl.fetchData(root.getNode()));
-            log.info(JSON.toJSONString(root));
-            TreeItem<ZooCtrl.Node> treeItem = parse(root);
-            log.info("data : {}", JSON.toJSONString(treeItem));
-            table.setRoot(treeItem);
+            Zoo zoo = new Zoo("120.78.200.102:2181");
+            log.info(JSON.toJSONString(zoo.getData()));
+            TreeItem<Zoo.Node> root = transfer(zoo.getData());
+            log.info("root : {}", JSON.toJSONString(root));
+            table.setRoot(root);
 
-            String[][] tableCfg = new String[][]{{"路径", "node", "300"},{"数据", "data", "1000"}};
+            String[][] tableCfg = new String[][]{{"名称", "name", "300"}, {"路径", "path", "300"}, {"数据", "data", "700"}};
             for (String[] columnCfg : tableCfg) {
-                TreeTableColumn<ZooCtrl.Node, String> column = new TreeTableColumn<>(columnCfg[0]);
+                TreeTableColumn<Zoo.Node, String> column = new TreeTableColumn<>(columnCfg[0]);
                 column.setPrefWidth(Integer.parseInt(columnCfg[2]));
+                column.setSortable(false);
                 column.setCellValueFactory(new TreeItemPropertyValueFactory<>(columnCfg[1]));
                 table.getColumns().add(column);
             }
@@ -61,13 +52,31 @@ public class ZookeeperController implements Initializable {
 
     }
 
-    private TreeItem<ZooCtrl.Node> parse(ZooCtrl.Node node){
-        TreeItem<ZooCtrl.Node> item = new TreeItem<>(node);
-        item.setExpanded(true);
-        for (ZooCtrl.Node child : node.getChildren()) {
-            item.getChildren().add(parse(child));
+    private TreeItem<Zoo.Node> transfer(Zoo.Node node) {
+        TreeItem<Zoo.Node> item = new TreeItem<>(node);
+        if(node.getLevel() <= 1){
+            item.setExpanded(true);
+        }
+        for (Zoo.Node child : node.getChildren()) {
+            item.getChildren().add(transfer(child));
         }
         return item;
     }
 
+    public void refresh(ActionEvent event) {
+        ObservableList<TreeItem<Zoo.Node>> list = table.getSelectionModel().getSelectedItems();
+        if (CollectionKit.isEmpty(list)) {
+            log.debug("no items selected");
+        }
+        for (TreeItem<Zoo.Node> treeItem : list) {
+            log.debug(treeItem.getValue().getPath());
+        }
+    }
+
+    public void create(ActionEvent event) {
+    }
+
+    public void delete(ActionEvent event) {
+        event.getTarget();
+    }
 }
