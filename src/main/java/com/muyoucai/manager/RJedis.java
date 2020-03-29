@@ -42,7 +42,7 @@ public class RJedis {
                     }
                     if("list".equals(type)){
                         long len = jedis.llen(key);
-                        items.add(new Item(key, type, len, JSON.toJSONString(jedis.lrange(key, 0, len))));
+                        items.add(new Item(key, type, len, JSON.toJSONString(jedis.lrange(key, 0, 100))));
                     }
                     if("set".equals(type)){
                         long card = jedis.scard(key);
@@ -50,7 +50,7 @@ public class RJedis {
                     }
                     if("zset".equals(type)){
                         long card = jedis.zcard(key);
-                        items.add(new Item(key, type, card, JSON.toJSONString(jedis.zrange(key, 0, card))));
+                        items.add(new Item(key, type, card, JSON.toJSONString(jedis.zrange(key, 0, 100))));
                     }
                 } catch (Exception e) {
                     FxUtils.warn(String.format("获取 %s 失败: %s", key, e.getMessage()));
