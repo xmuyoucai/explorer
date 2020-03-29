@@ -1,6 +1,6 @@
 package com.muyoucai.common;
 
-import com.muyoucai.EplApp;
+import com.muyoucai.util.FxUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -34,9 +34,9 @@ public class Epl {
     public void initialize() throws IOException {
 
         log.info("加载主框架 ...");
-        root = FXMLLoader.load(getClass().getResource(View.MAIN.getFxml()));
+        root = FxUtils.load(View.LAYOUT.getFxml());
         log.info("加载主菜栏 ...");
-        root.setTop(FXMLLoader.load(getClass().getResource(View.MENU.getFxml())));
+        root.setTop(FxUtils.load(View.MENU.getFxml()));
 
         switchTo(View.HOME);
 
@@ -50,7 +50,7 @@ public class Epl {
     }
 
     public void switchTo(View view) throws IOException {
-        log.info("加载 {} ...", view.getName());
+        log.info("切换至 {} ...", view.getName());
         root.setCenter(viewManager.retrieval(view));
     }
 

@@ -1,6 +1,7 @@
 package com.muyoucai.common;
 
 import com.google.common.collect.Maps;
+import com.muyoucai.util.FxUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.BorderPane;
 import lombok.Setter;
@@ -30,8 +31,7 @@ public class ViewManager {
         if(c != null){
             return c;
         }
-        log.info("加载 [{}] ...", view.getName());
-        views.put(view, FXMLLoader.load(getClass().getResource(view.getFxml())));
+        views.put(view, FxUtils.load(view.getFxml()));
         return views.get(view);
     }
 

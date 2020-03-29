@@ -10,12 +10,12 @@ import java.io.IOException;
 @Slf4j
 public class EplApp extends Application {
 
-    private final Epl epl = new Epl();
+    public static final Epl EPL = new Epl();
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        epl.setPrimaryStage(primaryStage);
-        epl.initialize();
+        EPL.setPrimaryStage(primaryStage);
+        EPL.initialize();
     }
 
     public static void main(String[] args) {

@@ -12,8 +12,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum View {
     MENU("菜单栏", "/views/menu.fxml"),
-    MAIN("主框架", "/views/main.fxml"),
-    HOME("主界面", "/views/home.fxml");
+    LAYOUT("主框架", "/views/layout.fxml"),
+    HOME("主界面", "/views/home.fxml"),
+    REDIS("Redis界面", "/views/redis.fxml"),
+    ZOOKEEPER("Zookeeper界面", "/views/zookeeper.fxml"),
+    ;
 
     @Getter
     private String name;
