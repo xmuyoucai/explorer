@@ -1,8 +1,13 @@
 package com.muyoucai.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.muyoucai.common.Cfg;
 import com.muyoucai.manager.Zoo;
 import com.muyoucai.util.CollectionKit;
+import com.muyoucai.util.FxUtils;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,7 +21,10 @@ import javafx.scene.layout.BorderPane;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class ZookeeperController implements Initializable {
@@ -27,16 +35,32 @@ public class ZookeeperController implements Initializable {
     @FXML
     private TreeTableView table;
 
+    private TreeItem<Zoo.Node> hideRoot;
+
+    private Map<String, TreeItem<Zoo.Node>> roots;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         log.info("Zookeeper界面控制器初始化 ...");
 
+        roots = Maps.newHashMap();
+
         try {
-            Zoo zoo = new Zoo("120.78.200.102:2181");
-            log.info(JSON.toJSONString(zoo.getData()));
-            TreeItem<Zoo.Node> root = transfer(zoo.getData());
-            log.info("root : {}", JSON.toJSONString(root));
-            table.setRoot(root);
+
+            Zoo.Node basic = new Zoo.Node();
+
+            String zooServers = Cfg.PROPERTIES.getProperty("zoo.servers");
+            if(!Strings.isNullOrEmpty(zooServers)){
+                for (String address : zooServers.split(",")) {
+                    basic.getChildren().add(new Zoo.Node(address));
+                }
+            }
+
+            hideRoot = transfer(basic);
+            log.info("root : {}", JSON.toJSONString(hideRoot));
+
+            table.setRoot(hideRoot);
+            table.setShowRoot(false);
 
             String[][] tableCfg = new String[][]{{"名称", "name", "300"}, {"路径", "path", "300"}, {"数据", "data", "700"}};
             for (String[] columnCfg : tableCfg) {
@@ -57,6 +81,9 @@ public class ZookeeperController implements Initializable {
         if(node.getLevel() <= 1){
             item.setExpanded(true);
         }
+        if(node.getLevel() == 1){
+            roots.put(node.getId(), item);
+        }
         for (Zoo.Node child : node.getChildren()) {
             item.getChildren().add(transfer(child));
         }
@@ -64,19 +91,33 @@ public class ZookeeperController implements Initializable {
     }
 
     public void refresh(ActionEvent event) {
-        ObservableList<TreeItem<Zoo.Node>> list = table.getSelectionModel().getSelectedItems();
-        if (CollectionKit.isEmpty(list)) {
-            log.debug("no items selected");
-        }
-        for (TreeItem<Zoo.Node> treeItem : list) {
-            log.debug(treeItem.getValue().getPath());
+        for (TreeItem<Zoo.Node> root : getSelectedLevel1Items()) {
+            Zoo zoo = new Zoo(root.getValue().getName());
+            TreeItem<Zoo.Node> ti = roots.get(root.getValue().getId());
+            ti.getChildren().clear();
+            ti.getChildren().add(transfer(zoo.getData()));
         }
     }
 
-    public void create(ActionEvent event) {
+    private List<TreeItem<Zoo.Node>> getSelectedLevel1Items() {
+        return getSelectedItems().stream().filter(ti -> ti.getValue().getLevel() == 1).collect(Collectors.toList());
+    }
+
+    private List<TreeItem<Zoo.Node>> getSelectedItems() {
+        List<TreeItem<Zoo.Node>> items = Lists.newArrayList();
+        items.addAll(table.getSelectionModel().getSelectedItems());
+        return items;
     }
 
     public void delete(ActionEvent event) {
-        event.getTarget();
+        List<TreeItem<Zoo.Node>> removeList = Lists.newArrayList();
+        for (TreeItem<Zoo.Node> root : getSelectedLevel1Items()) {
+            for (TreeItem<Zoo.Node> child : hideRoot.getChildren()) {
+                if(root.getValue().getId().equals(child.getValue().getId())){
+                    removeList.add(child);
+                }
+            }
+        }
+        hideRoot.getChildren().removeAll(removeList);
     }
 }

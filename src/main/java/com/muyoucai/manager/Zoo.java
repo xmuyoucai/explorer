@@ -6,12 +6,14 @@ import com.google.common.collect.Lists;
 import com.muyoucai.util.CollectionKit;
 import com.muyoucai.util.FxUtils;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -28,7 +30,7 @@ public class Zoo {
 
     public Zoo(String address) {
         try (ZooKeeper zoo = new ZooKeeper(address, 5000, new ZooWatcher())) {
-            fetchData((data = new Node(address, "/", 1)), zoo);
+            fetchData((data = new Node("/", "/", 1)), zoo);
         } catch (Exception e) {
             FxUtils.error(String.format("获取 [%s] 数据失败", address));
         }
@@ -82,6 +84,7 @@ public class Zoo {
     @Getter
     @Setter
     public static class Node {
+        private String id; // ID
         private String name; // 节点名称
         private String data; // 节点数据
         private int level; // 层级
@@ -89,7 +92,21 @@ public class Zoo {
         @JsonIgnore
         private List<Node> children;
 
+        public Node() {
+            id = UUID.randomUUID().toString();
+            this.level = 0;
+            this.children = Lists.newArrayList();
+        }
+
+        public Node(String name) {
+            id = UUID.randomUUID().toString();
+            this.name = name;
+            this.level = 1;
+            this.children = Lists.newArrayList();
+        }
+
         public Node(String name, String path, int level) {
+            id = UUID.randomUUID().toString();
             this.name = name;
             this.path = path;
             this.level = level;
