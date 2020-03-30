@@ -2,6 +2,9 @@ package com.muyoucai.util;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Dialog;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -14,6 +17,18 @@ import java.io.IOException;
  **/
 @Slf4j
 public class FxUtils {
+
+    public static void clipboard(String content){
+        ClipboardContent clipboardContent = new ClipboardContent();
+        clipboardContent.putString(content);
+        Clipboard.getSystemClipboard().setContent(clipboardContent);
+    }
+
+    public static void info(String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setHeaderText(content);
+        alert.showAndWait();
+    }
 
     public static void warn(String content) {
         Alert alert = new Alert(Alert.AlertType.WARNING);

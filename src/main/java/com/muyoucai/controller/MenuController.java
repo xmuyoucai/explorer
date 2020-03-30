@@ -40,6 +40,7 @@ public class MenuController implements Initializable {
             }
 
         } catch (IOException e) {
+            log.error("", e);
             FxUtils.error(e.getMessage());
         }
     }

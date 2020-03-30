@@ -37,6 +37,8 @@ public class Epl {
         root = FxUtils.load(View.LAYOUT.getFxml());
         log.info("加载主菜栏 ...");
         root.setTop(FxUtils.load(View.MENU.getFxml()));
+        // log.info("加载工具栏 ...");
+        // root.setBottom(FxUtils.load(View.TOOLBAR.getFxml()));
 
         switchTo(View.HOME);
 

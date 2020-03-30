@@ -5,7 +5,5 @@
 <?import javafx.scene.layout.*?>
 
 
-<BorderPane prefHeight="1355.0" prefWidth="760.0"
-            style="-fx-background-image: url('/img/bgb.jpg'); -fx-background-position: center; -fx-background-size: 1366 768;"
-            BorderPane.alignment="TOP_LEFT" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="1355.0" prefWidth="760.0" style="-fx-background-image: url('/img/bgb.jpg'); -fx-background-position: center; -fx-background-size: 1366 768;" BorderPane.alignment="TOP_LEFT" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
 </BorderPane>

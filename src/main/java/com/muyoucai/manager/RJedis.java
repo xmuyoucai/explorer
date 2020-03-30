@@ -1,11 +1,12 @@
 package com.muyoucai.manager;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.muyoucai.util.CollectionKit;
 import com.muyoucai.util.FxUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.Jedis;
 
 import java.util.List;
@@ -17,57 +18,128 @@ import java.util.Set;
  * @Date 2020/3/29 20:49
  * @Version 1.0
  **/
+@Slf4j
 public class RJedis {
 
     @Getter
-    private List<Item> items = Lists.newArrayList();
+    private Jedis jedis;
 
-    public RJedis(String pattern, String address, int port) {
-        try (Jedis jedis = new Jedis(address, port)) {
-            Set<String> keys = jedis.keys(pattern);
-            if (CollectionKit.isEmpty(keys)) {
-                return;
-            }
-            for (String key : keys) {
-                try {
-                    if(!jedis.exists(key)){
-                        continue;
-                    }
-                    String type = jedis.type(key);
-                    if("string".equals(type)){
-                        items.add(new Item(key, type, 1, jedis.get(key)));
-                    }
-                    if("hash".equals(type)){
-                        items.add(new Item(key, type, jedis.hlen(key), JSON.toJSONString(jedis.hgetAll(key))));
-                    }
-                    if("list".equals(type)){
-                        long len = jedis.llen(key);
-                        items.add(new Item(key, type, len, JSON.toJSONString(jedis.lrange(key, 0, 100))));
-                    }
-                    if("set".equals(type)){
-                        long card = jedis.scard(key);
-                        items.add(new Item(key, type, card, JSON.toJSONString(jedis.smembers(key))));
-                    }
-                    if("zset".equals(type)){
-                        long card = jedis.zcard(key);
-                        items.add(new Item(key, type, card, JSON.toJSONString(jedis.zrange(key, 0, 100))));
-                    }
-                } catch (Exception e) {
-                    FxUtils.warn(String.format("获取 %s 失败: %s", key, e.getMessage()));
+    /**
+     * 创建 Jedis 对象
+     *
+     * @param address
+     * @param port
+     * @param pass
+     */
+    public RJedis(String address, int port, String pass) {
+        jedis = new Jedis(address, port);
+        if(!Strings.isNullOrEmpty(pass)){
+            jedis.auth(pass);
+        }
+    }
+
+    /**
+     * 通过模式匹配获取 key
+     *
+     * @param pattern
+     * @return
+     */
+    public Set<String> keys(String pattern){
+        return jedis.keys(pattern);
+    }
+
+    /**
+     * 通过 keys 获取 values
+     *
+     * @param keys
+     * @return
+     */
+    public List<RedisItem> values(Set<String> keys){
+        List<RedisItem> items = Lists.newArrayList();
+        for (String key : keys) {
+            items.add(value(key));
+        }
+        return items;
+    }
+
+    /**
+     * 通过模式匹配获取 values
+     *
+     * @param pattern
+     * @return
+     */
+    public List<RedisItem> values(String pattern){
+        return values(keys(pattern));
+    }
+
+    /**
+     * 通过 key 获取 value
+     *
+     * @param key
+     * @return
+     */
+    public RedisItem value(String key){
+        try {
+            if(jedis.exists(key)){
+                String type = jedis.type(key);
+                if("string".equals(type)){
+                    return new RedisItem(key, type, 1, jedis.get(key));
+                }
+                if("hash".equals(type)){
+                    return new RedisItem(key, type, jedis.hlen(key), JSON.toJSONString(jedis.hgetAll(key)));
+                }
+                if("list".equals(type)){
+                    long len = jedis.llen(key);
+                    return new RedisItem(key, type, len, JSON.toJSONString(jedis.lrange(key, 0, 100)));
+                }
+                if("set".equals(type)){
+                    long card = jedis.scard(key);
+                    return new RedisItem(key, type, card, JSON.toJSONString(jedis.smembers(key)));
+                }
+                if("zset".equals(type)){
+                    long card = jedis.zcard(key);
+                    return new RedisItem(key, type, card, JSON.toJSONString(jedis.zrange(key, 0, 100)));
                 }
             }
+            return null;
         } catch (Exception e) {
-            FxUtils.error(String.format("获取 redis 数据失败: %s", e.getMessage()));
+            FxUtils.warn(String.format("获取 %s 失败: %s", key, e.getMessage()));
+            return null;
         }
+    }
+
+    public String info(){
+        return jedis.info();
+    }
+
+    /**
+     * 关闭连接
+     */
+    public void close(){
+        jedis.close();
     }
 
     @Getter
     @AllArgsConstructor
-    public static class Item {
+    public static class RedisItem {
         private String key;
         private String type;
         private long count;
         private Object value;
+
+        public Object gi(int i){
+            switch (i){
+                case 0:
+                    return key;
+                case 1:
+                    return type;
+                case 2:
+                    return count;
+                case 3:
+                    return value;
+            }
+            return null;
+        }
     }
 
 }
