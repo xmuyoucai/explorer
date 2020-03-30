@@ -19,13 +19,4 @@
             </children>
         </HBox>
     </center>
-   <top>
-      <FlowPane prefHeight="30.0" BorderPane.alignment="CENTER">
-         <children>
-            <Button mnemonicParsing="false" onAction="#refresh" text="刷新">
-               <FlowPane.margin>
-                  <Insets right="5.0" />
-               </FlowPane.margin></Button>
-         </children></FlowPane>
-   </top>
 </BorderPane>
