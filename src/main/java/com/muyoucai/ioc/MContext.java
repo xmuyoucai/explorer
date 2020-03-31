@@ -18,6 +18,10 @@ public class MContext {
     private static final Map<String, Object> BEAN_BY_TYPE_MAP = Maps.newHashMap();
     private static final Map<String, Object> BEAN_BY_NAME_MAP = Maps.newHashMap();
 
+    public static void main(String[] args) {
+        init();
+    }
+
     public static void init(){
 
         Set<String> set = ClassKit.scan("com.muyoucai.storage");
@@ -28,6 +32,14 @@ public class MContext {
             instantiate(className);
         }
 
+    }
+
+    private static <T> T getBean(Class<T> clz){
+        Object bean = BEAN_BY_TYPE_MAP.get(clz.getCanonicalName());
+        if(bean == null){
+            throw new CustomException(String.format("not found %s bean", clz.getCanonicalName()));
+        }
+        return (T) bean;
     }
 
     private static void instantiate(String className) {
@@ -45,33 +57,32 @@ public class MContext {
             for (Field field : fields) {
                 MInjector mInjector = field.getAnnotation(MInjector.class);
                 if(mInjector != null){
-
-                    instantiate(field.getType().getCanonicalName());
-
-                    Object injectorObj = BEAN_BY_TYPE_MAP.get(field.getType().getCanonicalName());
-
-                    if(injectorObj == null)
-                        throw new InstantiationException(String.format("no bean of %s found", field.getType().getCanonicalName()));
-
-                    if(injectorObj != null){
-                        field.setAccessible(true);
-                        field.set(bean, injectorObj);
-                    }
+                    injector(bean, field);
                 }
             }
-
             BEAN_BY_TYPE_MAP.put(className, bean);
             if(!Strings.isNullOrEmpty(mBean.name())){
                 BEAN_BY_NAME_MAP.put(mBean.name(), bean);
             }
-
         } catch (Exception e) {
             throw new CustomException(e);
         }
     }
 
-    public static void main(String[] args) {
-        init();
+    private static void injector(Object bean, Field field) throws InstantiationException, IllegalAccessException {
+
+        instantiate(field.getType().getCanonicalName());
+
+        Object injectorObj = BEAN_BY_TYPE_MAP.get(field.getType().getCanonicalName());
+
+        if(injectorObj == null)
+            throw new InstantiationException(String.format("no bean of %s found", field.getType().getCanonicalName()));
+
+        if(injectorObj != null){
+            field.setAccessible(true);
+            field.set(bean, injectorObj);
+        }
+
     }
 
 }
