@@ -10,9 +10,15 @@ import java.io.IOException;
  */
 public class FileKit {
 
-    public static File createDir(String dirPath){
+    public static boolean exists(String filepath){
+        return new File(filepath).exists();
+    }
+
+    public static File openOrCreateDir(String dirPath){
         File file = new File(dirPath);
-        file.mkdir();
+        if(!file.exists()){
+            file.mkdir();
+        }
         return file;
     }
 

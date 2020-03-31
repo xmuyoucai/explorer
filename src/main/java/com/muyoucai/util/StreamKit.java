@@ -3,10 +3,7 @@ package com.muyoucai.util;
 import com.google.common.base.Strings;
 import com.muyoucai.ex.CustomException;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * @author lzy
@@ -23,6 +20,22 @@ public class StreamKit {
             } catch (IOException e) {
                 throw new CustomException(e);
             }
+        }
+    }
+
+    public static String read(String filepath) {
+        try (
+                FileReader fr = new FileReader(filepath);
+                BufferedReader br = new BufferedReader(fr);
+        ) {
+            StringBuffer ret = new StringBuffer();
+            String s;
+            while ((s = br.readLine()) != null) {
+                ret.append(s);
+            }
+            return ret.toString();
+        } catch (IOException e) {
+            throw new CustomException(e);
         }
     }
 

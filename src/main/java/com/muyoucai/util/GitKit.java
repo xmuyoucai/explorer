@@ -1,21 +1,11 @@
 package com.muyoucai.util;
 
-import com.alibaba.fastjson.JSON;
 import com.muyoucai.ex.CustomException;
-import lombok.extern.slf4j.Slf4j;
-import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.NoFilepatternException;
-import org.eclipse.jgit.errors.UnsupportedCredentialItem;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.transport.CredentialItem;
-import org.eclipse.jgit.transport.CredentialsProvider;
-import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * @author lzy
@@ -23,7 +13,7 @@ import java.io.IOException;
 public class GitKit {
 
     public static Repository initRepo(String localDir) {
-        try (Git git = Git.init().setDirectory(FileKit.createDir(localDir)).call()) {
+        try (Git git = Git.init().setDirectory(FileKit.openOrCreateDir(localDir)).call()) {
             return git.getRepository();
         } catch (Exception e) {
             throw new CustomException(e);
@@ -33,7 +23,7 @@ public class GitKit {
     public static Repository createRepo(String localDir, String repo) {
         try (Git result = Git.cloneRepository()
                 .setURI(repo)
-                .setDirectory(FileKit.createDir(localDir))
+                .setDirectory(FileKit.openOrCreateDir(localDir))
                 .setCredentialsProvider(new UsernamePasswordCredentialsProvider("xmuyoucai@qq.com", ".myc724815"))
                 .call()) {
             return result.getRepository();

@@ -1,19 +1,12 @@
 package com.muyoucai.storage;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * @author lzy
  */
-public interface IStorage {
+public interface IStorage<T> {
 
-    void save(RedisServer redisServer);
+    void save(T data);
 
-    class RedisServer {
-        @Setter
-        @Getter
-        private String id, host, port, pass;
-    }
+    T get();
 
 }
