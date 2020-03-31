@@ -1,8 +1,7 @@
-package com.muyoucai.util;
+package com.muyoucai.view;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Dialog;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.muyoucai.common;
+package com.muyoucai.core;
 
 import com.muyoucai.annotation.MBean;
 import lombok.extern.slf4j.Slf4j;

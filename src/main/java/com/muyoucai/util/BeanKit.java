@@ -1,11 +1,9 @@
 package com.muyoucai.util;
 
 import com.google.common.collect.Sets;
-import com.muyoucai.annotation.MBean;
 import com.muyoucai.ex.CustomException;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.util.Set;
 
 public class BeanKit {

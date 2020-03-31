@@ -1,7 +1,6 @@
 package com.muyoucai.view;
 
 import com.google.common.collect.Maps;
-import com.muyoucai.util.FxUtils;
 import javafx.scene.layout.BorderPane;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

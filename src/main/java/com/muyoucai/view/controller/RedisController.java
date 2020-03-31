@@ -1,9 +1,9 @@
 package com.muyoucai.view.controller;
 
 import com.google.common.base.Strings;
-import com.muyoucai.common.Settings;
+import com.muyoucai.core.Settings;
 import com.muyoucai.manager.RJedis;
-import com.muyoucai.util.FxUtils;
+import com.muyoucai.view.FxUtils;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventType;

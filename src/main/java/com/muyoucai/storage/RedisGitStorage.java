@@ -1,13 +1,14 @@
-package com.muyoucai.storage.impl;
+package com.muyoucai.storage;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.muyoucai.annotation.MBean;
 import com.muyoucai.annotation.MInjector;
-import com.muyoucai.storage.IStorage;
-import com.muyoucai.storage.Position;
-import com.muyoucai.storage.data.RedisData;
-import com.muyoucai.manager.RGit;
+import com.muyoucai.annotation.MValue;
+import com.muyoucai.common.IStorage;
+import com.muyoucai.model.RedisData;
+import com.muyoucai.manager.DB;
+import com.muyoucai.util.FileKit;
 import com.muyoucai.util.StreamKit;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -23,26 +24,38 @@ public class RedisGitStorage implements IStorage<RedisData> {
 
     @MInjector
     @Getter
-    private RGit rGit;
+    private DB gitManager;
+
+    @MValue("git.localDir")
+    private String localDir;
 
     public RedisGitStorage() {
-        rGit = new RGit();
-        if(!rGit.exists(Position.REDIS.getFullPath())){
-            rGit.createDirIfNotExists(Position.REDIS.getFilepath());
-            rGit.createFileIfNotExists(Position.REDIS.getFullPath());
+        gitManager = new DB();
+        if(!gitManager.exists(Position.REDIS.getFullPath())){
+            gitManager.createDirIfNotExists(Position.REDIS.getFilepath());
+            gitManager.createFileIfNotExists(Position.REDIS.getFullPath());
         }
     }
 
     @Override
+    public boolean exists() {
+        if(!FileKit.exists(localDir)){
+
+        }
+
+        return false;
+    }
+
+    @Override
     public void save(RedisData data) {
-        String db = rGit.getLocalDir() + "/" + Position.REDIS.getFullPath();
+        String db = localDir + "/" + Position.REDIS.getFullPath();
         StreamKit.write(JSON.toJSONString(data), db);
-        rGit.upload(Position.REDIS.getFullPath());
+        gitManager.upload(Position.REDIS.getFullPath());
     }
 
     @Override
     public RedisData get() {
-        String db = rGit.getLocalDir() + "/" + Position.REDIS.getFullPath();
+        String db = localDir + "/" + Position.REDIS.getFullPath();
         return JSON.toJavaObject(JSON.parseObject(StreamKit.read(db)), RedisData.class);
     }
 

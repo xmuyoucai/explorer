@@ -1,8 +1,8 @@
 package com.muyoucai.view.controller;
 
-import com.muyoucai.view.EplApp;
+import com.muyoucai.core.ApplicationContext;
 import com.muyoucai.view.View;
-import com.muyoucai.util.FxUtils;
+import com.muyoucai.view.FxUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.MenuItem;
@@ -28,13 +28,13 @@ public class MenuController implements Initializable {
                 MenuItem mi = (MenuItem) event.getSource();
                 String text = mi.getText();
                 if("Redis".equals(text)){
-                    EplApp.EPL.switchTo(View.REDIS);
+                    ApplicationContext.FRONT_ENTRANCE.switchTo(View.REDIS);
                 }
                 if("Zookeeper".equals(text)){
-                    EplApp.EPL.switchTo(View.ZOOKEEPER);
+                    ApplicationContext.FRONT_ENTRANCE.switchTo(View.ZOOKEEPER);
                 }
                 if("首页".equals(text)){
-                    EplApp.EPL.switchTo(View.HOME);
+                    ApplicationContext.FRONT_ENTRANCE.switchTo(View.HOME);
                 }
             }
 

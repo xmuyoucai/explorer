@@ -3,7 +3,7 @@ package com.muyoucai.manager;
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.muyoucai.util.FxUtils;
+import com.muyoucai.view.FxUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

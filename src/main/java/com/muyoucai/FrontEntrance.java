@@ -1,7 +1,11 @@
-package com.muyoucai.view;
+package com.muyoucai;
 
-import com.muyoucai.common.Settings;
-import com.muyoucai.util.FxUtils;
+import com.muyoucai.core.ApplicationContext;
+import com.muyoucai.core.Settings;
+import com.muyoucai.view.FxUtils;
+import com.muyoucai.view.View;
+import com.muyoucai.view.ViewManager;
+import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -18,7 +22,7 @@ import java.io.IOException;
  * @Version 1.0
  **/
 @Slf4j
-public class Epl {
+public class FrontEntrance extends Application {
 
     @Getter
     @Setter
@@ -54,6 +58,17 @@ public class Epl {
     public void switchTo(View view) throws IOException {
         log.info("切换至 {} ...", view.getName());
         root.setCenter(viewManager.retrieval(view));
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws IOException {
+        setPrimaryStage(primaryStage);
+        initialize();
+    }
+
+    public static void main(String[] args) {
+        ApplicationContext.run(args);
+        launch(args);
     }
 
 }

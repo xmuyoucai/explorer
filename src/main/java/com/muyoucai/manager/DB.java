@@ -1,11 +1,12 @@
 package com.muyoucai.manager;
 
+import com.google.common.base.Strings;
 import com.muyoucai.annotation.MBean;
-import com.muyoucai.common.Settings;
+import com.muyoucai.annotation.MValue;
+import com.muyoucai.core.Settings;
 import com.muyoucai.ex.CustomException;
 import com.muyoucai.util.FileKit;
 import com.muyoucai.util.StreamKit;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.dircache.DirCache;
@@ -22,19 +23,48 @@ import java.io.File;
  */
 @Slf4j
 @MBean
-public class RGit {
+public class DB {
 
-    @Getter
-    private String uri, localDir;
+    @MValue("git.localDir")
+    private String localDir;
+
+    @MValue("git.uri")
+    private String uri;
+
+    @MValue("git.user")
+    private String user;
+
+    @MValue("git.pass")
+    private String pass;
 
     private CredentialsProvider credentialsProvider;
 
-    public RGit() {
-        localDir = Settings.PROPERTIES.getProperty("git.localDir");
-        uri = Settings.PROPERTIES.getProperty("git.uri");
+    public DB() {
         String user = Settings.PROPERTIES.getProperty("git.user");
         String pass = Settings.PROPERTIES.getProperty("git.pass");
         credentialsProvider = new UsernamePasswordCredentialsProvider(user, pass);
+    }
+
+    public boolean exists(){
+        if(Strings.isNullOrEmpty(localDir)){
+            throw new CustomException("[git.localDir] is not configured");
+        }
+        return FileKit.exists(localDir);
+    }
+
+    public void create(){
+        if(Strings.isNullOrEmpty(uri)){
+            throw new CustomException("[git.uri] is not configured");
+        }
+        if(Strings.isNullOrEmpty(user)){
+            throw new CustomException("[git.user] is not configured");
+        }
+        if(Strings.isNullOrEmpty(pass)){
+            throw new CustomException("[git.pass] is not configured");
+        }
+        FileKit.openOrCreateDir(localDir);
+        log.info("clone ..");
+        cloneRepo();
     }
 
     public Repository initRepo() {
@@ -127,15 +157,15 @@ public class RGit {
     }
 
     public static void main(String[] args) {
-        RGit rGit = new RGit();
+        DB gitManager = new DB();
         System.out.println("write ...");
-        rGit.write("2323232");
+        gitManager.write("2323232");
         System.out.println("add ...");
-        rGit.add();
+        gitManager.add();
         System.out.println("commit ...");
-        rGit.commit();
+        gitManager.commit();
         System.out.println("push ...");
-        rGit.push();
+        gitManager.push();
     }
 
 }
