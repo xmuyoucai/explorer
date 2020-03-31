@@ -19,7 +19,7 @@ public class AppConfig {
     @MInjector
     private Environment env;
 
-    @MBean
+    // @MBean
     public CredentialsProvider credentialsProvider(){
         return new UsernamePasswordCredentialsProvider(env.getString("git.user"), env.getString("git.pass"));
     }

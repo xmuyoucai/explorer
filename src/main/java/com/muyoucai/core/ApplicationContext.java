@@ -12,6 +12,7 @@ import com.muyoucai.util.BeanKit;
 import com.muyoucai.util.ClassKit;
 import com.muyoucai.FrontEntrance;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.cglib.proxy.Enhancer;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -36,8 +37,11 @@ public class ApplicationContext {
 
         String[] scanPackages = new String[]{"com.muyoucai.config", "com.muyoucai.manager", "com.muyoucai.storage"};
 
+        Enhancer enhancer = new Enhancer();
+        enhancer.setCallback(new MyMethodInterceptor());
+
         for (String scanPackage : scanPackages) {
-            ClassKit.scan(scanPackage).forEach(s -> instantiate(s));
+            ClassKit.scan(scanPackage).forEach(s -> instantiate(s, enhancer));
         }
 
     }
@@ -50,7 +54,7 @@ public class ApplicationContext {
         return (T) bean;
     }
 
-    private static void instantiate(String className) {
+    private static void instantiate(String className, Enhancer enhancer) {
         try {
             Class<?> clz = Class.forName(className);
 
@@ -64,13 +68,16 @@ public class ApplicationContext {
 
             if(BEAN_BY_NAME_MAP.containsKey(className)) return;
 
-            Object bean = clz.newInstance();
+
+            enhancer.setSuperclass(clz);
+
+            Object bean = enhancer.create();
 
             Field[] fields = clz.getDeclaredFields();
             for (Field field : fields) {
                 MInjector mInjector = field.getAnnotation(MInjector.class);
                 if(mInjector != null){
-                    injector(bean, field);
+                    injector(bean, field, enhancer);
                 }
                 MValue mValue = field.getAnnotation(MValue.class);
                 if(mValue != null){
@@ -105,9 +112,9 @@ public class ApplicationContext {
         }
     }
 
-    private static void injector(Object bean, Field field) throws InstantiationException, IllegalAccessException {
+    private static void injector(Object bean, Field field, Enhancer enhancer) throws InstantiationException, IllegalAccessException {
         //
-        instantiate(field.getType().getCanonicalName());
+        instantiate(field.getType().getCanonicalName(), enhancer);
         //
         Object injectorObj;
         //

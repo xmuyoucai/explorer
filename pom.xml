@@ -17,6 +17,14 @@
 
     <dependencies>
 
+        <!-- cglib -->
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>3.3.0</version>
+        </dependency>
+
+
         <!-- org.eclipse.jgit -->
         <dependency>
             <groupId>org.eclipse.jgit</groupId>
