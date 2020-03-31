@@ -1,4 +1,4 @@
-package com.muyoucai.common;
+package com.muyoucai.view;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

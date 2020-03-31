@@ -1,6 +1,7 @@
-package com.muyoucai;
+package com.muyoucai.view;
 
-import com.muyoucai.common.Epl;
+import com.muyoucai.view.Epl;
+import com.muyoucai.ioc.ApplicationContext;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
@@ -16,11 +17,10 @@ public class EplApp extends Application {
     public void start(Stage primaryStage) throws IOException {
         EPL.setPrimaryStage(primaryStage);
         EPL.initialize();
-
-
     }
 
     public static void main(String[] args) {
+        ApplicationContext.initialize();
         launch(args);
     }
 }

@@ -1,4 +1,4 @@
-package com.muyoucai.controller;
+package com.muyoucai.view.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

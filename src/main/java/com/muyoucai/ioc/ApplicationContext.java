@@ -5,7 +5,6 @@ import com.google.common.collect.Maps;
 import com.muyoucai.annotation.MBean;
 import com.muyoucai.annotation.MInjector;
 import com.muyoucai.ex.CustomException;
-import com.muyoucai.storage.impl.RedisGitStorage;
 import com.muyoucai.util.BeanKit;
 import com.muyoucai.util.ClassKit;
 
@@ -13,16 +12,16 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Set;
 
-public class MContext {
+public class ApplicationContext {
 
     private static final Map<String, Object> BEAN_BY_TYPE_MAP = Maps.newHashMap();
     private static final Map<String, Object> BEAN_BY_NAME_MAP = Maps.newHashMap();
 
     public static void main(String[] args) {
-        init();
+        initialize();
     }
 
-    public static void init(){
+    public static void initialize(){
 
         Set<String> set = ClassKit.scan("com.muyoucai.storage");
         Set<String> mBeanSet = BeanKit.filter(MBean.class, set);

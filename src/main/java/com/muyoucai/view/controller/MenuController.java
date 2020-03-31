@@ -1,10 +1,9 @@
-package com.muyoucai.controller;
+package com.muyoucai.view.controller;
 
-import com.muyoucai.EplApp;
-import com.muyoucai.common.View;
+import com.muyoucai.view.EplApp;
+import com.muyoucai.view.View;
 import com.muyoucai.util.FxUtils;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.MenuItem;
 import lombok.extern.slf4j.Slf4j;

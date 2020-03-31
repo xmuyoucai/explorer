@@ -1,7 +1,7 @@
-package com.muyoucai.controller;
+package com.muyoucai.view.controller;
 
 import com.google.common.base.Strings;
-import com.muyoucai.common.Cfg;
+import com.muyoucai.common.Settings;
 import com.muyoucai.manager.RJedis;
 import com.muyoucai.util.FxUtils;
 import javafx.collections.FXCollections;
@@ -39,7 +39,7 @@ public class RedisController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         log.info("Redis界面控制器初始化 ...");
 
-        String redisConf = Cfg.PROPERTIES.getProperty("redis.conf");
+        String redisConf = Settings.PROPERTIES.getProperty("redis.conf");
         if (Strings.isNullOrEmpty(redisConf)) {
             return;
         }

@@ -1,7 +1,7 @@
-package com.muyoucai.common;
+package com.muyoucai.view;
 
+import com.muyoucai.common.Settings;
 import com.muyoucai.util.FxUtils;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -43,9 +43,9 @@ public class Epl {
         switchTo(View.HOME);
 
         log.info("初始化场景 ...");
-        primaryStage.setScene(new Scene(root, Cfg.WIDTH, Cfg.HEIGHT));
+        primaryStage.setScene(new Scene(root, Settings.WIDTH, Settings.HEIGHT));
 
-        primaryStage.setTitle(Cfg.TITLE);
+        primaryStage.setTitle(Settings.TITLE);
         primaryStage.setResizable(false);
 
         primaryStage.show();

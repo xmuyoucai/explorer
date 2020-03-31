@@ -1,9 +1,7 @@
 package com.muyoucai.manager;
 
-import com.alibaba.fastjson.JSON;
-import com.google.common.base.Joiner;
 import com.muyoucai.annotation.MBean;
-import com.muyoucai.common.Cfg;
+import com.muyoucai.common.Settings;
 import com.muyoucai.ex.CustomException;
 import com.muyoucai.util.FileKit;
 import com.muyoucai.util.StreamKit;
@@ -32,10 +30,10 @@ public class RGit {
     private CredentialsProvider credentialsProvider;
 
     public RGit() {
-        localDir = Cfg.PROPERTIES.getProperty("git.localDir");
-        uri = Cfg.PROPERTIES.getProperty("git.uri");
-        String user = Cfg.PROPERTIES.getProperty("git.user");
-        String pass = Cfg.PROPERTIES.getProperty("git.pass");
+        localDir = Settings.PROPERTIES.getProperty("git.localDir");
+        uri = Settings.PROPERTIES.getProperty("git.uri");
+        String user = Settings.PROPERTIES.getProperty("git.user");
+        String pass = Settings.PROPERTIES.getProperty("git.pass");
         credentialsProvider = new UsernamePasswordCredentialsProvider(user, pass);
     }
 

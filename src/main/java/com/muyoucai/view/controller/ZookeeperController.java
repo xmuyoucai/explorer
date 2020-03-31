@@ -1,26 +1,18 @@
-package com.muyoucai.controller;
+package com.muyoucai.view.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.muyoucai.common.Cfg;
-import com.muyoucai.manager.RJedis;
+import com.muyoucai.common.Settings;
 import com.muyoucai.manager.Zoo;
-import com.muyoucai.util.CollectionKit;
 import com.muyoucai.util.FxUtils;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.control.cell.TextFieldTreeCell;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
-import javafx.util.Callback;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URL;
@@ -52,7 +44,7 @@ public class ZookeeperController implements Initializable {
 
             Zoo.Node basic = new Zoo.Node();
 
-            String zooServers = Cfg.PROPERTIES.getProperty("zoo.servers");
+            String zooServers = Settings.PROPERTIES.getProperty("zoo.servers");
             if (!Strings.isNullOrEmpty(zooServers)) {
                 for (String address : zooServers.split(",")) {
                     basic.getChildren().add(new Zoo.Node(address));
