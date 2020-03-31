@@ -2,11 +2,14 @@ package com.muyoucai.storage.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import com.muyoucai.annotation.MBean;
+import com.muyoucai.annotation.MInjector;
 import com.muyoucai.storage.IStorage;
 import com.muyoucai.storage.Position;
 import com.muyoucai.storage.data.RedisData;
 import com.muyoucai.manager.RGit;
 import com.muyoucai.util.StreamKit;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.UUID;
@@ -15,8 +18,11 @@ import java.util.UUID;
  * @author lzy
  */
 @Slf4j
+@MBean
 public class RedisGitStorage implements IStorage<RedisData> {
 
+    @MInjector
+    @Getter
     private RGit rGit;
 
     public RedisGitStorage() {

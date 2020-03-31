@@ -2,6 +2,7 @@ package com.muyoucai.manager;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Joiner;
+import com.muyoucai.annotation.MBean;
 import com.muyoucai.common.Cfg;
 import com.muyoucai.ex.CustomException;
 import com.muyoucai.util.FileKit;
@@ -22,6 +23,7 @@ import java.io.File;
  * @author lzy
  */
 @Slf4j
+@MBean
 public class RGit {
 
     @Getter

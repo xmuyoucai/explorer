@@ -16,6 +16,8 @@ public class EplApp extends Application {
     public void start(Stage primaryStage) throws IOException {
         EPL.setPrimaryStage(primaryStage);
         EPL.initialize();
+
+
     }
 
     public static void main(String[] args) {
