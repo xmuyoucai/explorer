@@ -1,8 +1,8 @@
 package com.muyoucai.manager;
 
 import com.google.common.base.Strings;
-import com.muyoucai.annotation.MBean;
-import com.muyoucai.annotation.MValue;
+import com.muyoucai.annotation.Bean;
+import com.muyoucai.annotation.Value;
 import com.muyoucai.core.Settings;
 import com.muyoucai.ex.CustomException;
 import com.muyoucai.util.FileKit;
@@ -22,19 +22,19 @@ import java.io.File;
  * @author lzy
  */
 @Slf4j
-@MBean
+@Bean
 public class DB {
 
-    @MValue("git.localDir")
+    @Value("git.localDir")
     private String localDir;
 
-    @MValue("git.uri")
+    @Value("git.uri")
     private String uri;
 
-    @MValue("git.user")
+    @Value("git.user")
     private String user;
 
-    @MValue("git.pass")
+    @Value("git.pass")
     private String pass;
 
     private CredentialsProvider credentialsProvider;

@@ -1,7 +1,6 @@
 package com.muyoucai.core;
 
 import com.google.common.collect.Maps;
-import com.muyoucai.annotation.MBean;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 

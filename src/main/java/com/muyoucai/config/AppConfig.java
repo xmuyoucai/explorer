@@ -1,8 +1,7 @@
 package com.muyoucai.config;
 
-import com.muyoucai.annotation.MBean;
-import com.muyoucai.annotation.MConfig;
-import com.muyoucai.annotation.MInjector;
+import com.muyoucai.annotation.Configuration;
+import com.muyoucai.annotation.Injector;
 import com.muyoucai.core.Environment;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
@@ -13,13 +12,13 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
  * @Date 2020/3/31 22:45
  * @Version 1.0
  **/
-@MConfig
+@Configuration
 public class AppConfig {
 
-    @MInjector
+    @Injector
     private Environment env;
 
-    // @MBean
+    // @Bean
     public CredentialsProvider credentialsProvider(){
         return new UsernamePasswordCredentialsProvider(env.getString("git.user"), env.getString("git.pass"));
     }

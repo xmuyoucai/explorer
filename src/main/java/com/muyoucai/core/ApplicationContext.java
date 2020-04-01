@@ -2,13 +2,12 @@ package com.muyoucai.core;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
-import com.muyoucai.annotation.MBean;
-import com.muyoucai.annotation.MConfig;
-import com.muyoucai.annotation.MInjector;
-import com.muyoucai.annotation.MValue;
+import com.muyoucai.annotation.Bean;
+import com.muyoucai.annotation.Configuration;
+import com.muyoucai.annotation.Injector;
+import com.muyoucai.annotation.Value;
 import com.muyoucai.ex.CustomException;
-import com.muyoucai.manager.DB;
-import com.muyoucai.util.BeanKit;
+import com.muyoucai.util.CglibKit;
 import com.muyoucai.util.ClassKit;
 import com.muyoucai.FrontEntrance;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,6 @@ import net.sf.cglib.proxy.Enhancer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.Set;
 
 @Slf4j
 public class ApplicationContext {
@@ -37,11 +35,8 @@ public class ApplicationContext {
 
         String[] scanPackages = new String[]{"com.muyoucai.config", "com.muyoucai.manager", "com.muyoucai.storage"};
 
-        Enhancer enhancer = new Enhancer();
-        enhancer.setCallback(new MyMethodInterceptor());
-
         for (String scanPackage : scanPackages) {
-            ClassKit.scan(scanPackage).forEach(s -> instantiate(s, enhancer));
+            ClassKit.scan(scanPackage).forEach(s -> instantiate(s));
         }
 
     }
@@ -54,32 +49,29 @@ public class ApplicationContext {
         return (T) bean;
     }
 
-    private static void instantiate(String className, Enhancer enhancer) {
+    private static void instantiate(String className) {
         try {
             Class<?> clz = Class.forName(className);
 
-            MConfig mConfig = clz.getAnnotation(MConfig.class);
+            Configuration mConfig = clz.getAnnotation(Configuration.class);
             boolean isConfigBean = mConfig != null;
 
-            MBean mBean = clz.getAnnotation(MBean.class);
+            Bean mBean = clz.getAnnotation(Bean.class);
             boolean isOrdinaryBean = mBean != null;
 
             if(!isConfigBean && !isOrdinaryBean) return;
 
             if(BEAN_BY_NAME_MAP.containsKey(className)) return;
 
-
-            enhancer.setSuperclass(clz);
-
-            Object bean = enhancer.create();
+            Object bean = CglibKit.createProxy(clz);
 
             Field[] fields = clz.getDeclaredFields();
             for (Field field : fields) {
-                MInjector mInjector = field.getAnnotation(MInjector.class);
+                Injector mInjector = field.getAnnotation(Injector.class);
                 if(mInjector != null){
-                    injector(bean, field, enhancer);
+                    injector(bean, field);
                 }
-                MValue mValue = field.getAnnotation(MValue.class);
+                Value mValue = field.getAnnotation(Value.class);
                 if(mValue != null){
                     field.setAccessible(true);
                     Environment environment = (Environment) BEAN_BY_TYPE_MAP.get(Environment.class.getCanonicalName());
@@ -90,7 +82,7 @@ public class ApplicationContext {
             if(isConfigBean){
                 Method[] methods = clz.getDeclaredMethods();
                 for (Method method : methods) {
-                    MBean mBeanOnMethod = method.getAnnotation(MBean.class);
+                    Bean mBeanOnMethod = method.getAnnotation(Bean.class);
                     if(mBeanOnMethod == null) continue;
                     log.info("method bean : {}", method.getReturnType().getCanonicalName());
                     Object methodBean = method.invoke(bean);
@@ -112,9 +104,9 @@ public class ApplicationContext {
         }
     }
 
-    private static void injector(Object bean, Field field, Enhancer enhancer) throws InstantiationException, IllegalAccessException {
+    private static void injector(Object bean, Field field) throws InstantiationException, IllegalAccessException {
         //
-        instantiate(field.getType().getCanonicalName(), enhancer);
+        instantiate(field.getType().getCanonicalName());
         //
         Object injectorObj;
         //
