@@ -1,9 +1,9 @@
 package com.muyoucai.manager;
 
 import com.google.common.base.Strings;
-import com.muyoucai.annotation.Bean;
-import com.muyoucai.annotation.Value;
-import com.muyoucai.core.Settings;
+import com.muyoucai.framework.annotation.Bean;
+import com.muyoucai.framework.annotation.Value;
+import com.muyoucai.framework.Settings;
 import com.muyoucai.ex.CustomException;
 import com.muyoucai.util.FileKit;
 import com.muyoucai.util.StreamKit;
@@ -22,7 +22,6 @@ import java.io.File;
  * @author lzy
  */
 @Slf4j
-@Bean
 public class DB {
 
     @Value("git.localDir")

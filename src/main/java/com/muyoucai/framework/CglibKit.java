@@ -1,6 +1,6 @@
-package com.muyoucai.util;
+package com.muyoucai.framework;
 
-import com.muyoucai.core.MyMethodInterceptor;
+import com.muyoucai.framework.MyMethodInterceptor;
 import net.sf.cglib.proxy.Enhancer;
 
 public class CglibKit {

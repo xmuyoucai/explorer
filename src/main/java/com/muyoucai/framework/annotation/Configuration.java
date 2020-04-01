@@ -1,4 +1,4 @@
-package com.muyoucai.annotation;
+package com.muyoucai.framework.annotation;
 
 import org.eclipse.jgit.transport.CredentialsProvider;
 

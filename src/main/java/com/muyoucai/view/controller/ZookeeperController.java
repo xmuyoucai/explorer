@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.muyoucai.core.Settings;
+import com.muyoucai.framework.Settings;
 import com.muyoucai.manager.Zoo;
 import com.muyoucai.view.FxUtils;
 import javafx.event.ActionEvent;

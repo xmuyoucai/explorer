@@ -2,9 +2,8 @@ package com.muyoucai.storage;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
-import com.muyoucai.annotation.Bean;
-import com.muyoucai.annotation.Injector;
-import com.muyoucai.annotation.Value;
+import com.muyoucai.framework.annotation.Autowire;
+import com.muyoucai.framework.annotation.Value;
 import com.muyoucai.common.IStorage;
 import com.muyoucai.model.RedisData;
 import com.muyoucai.manager.DB;
@@ -19,10 +18,9 @@ import java.util.UUID;
  * @author lzy
  */
 @Slf4j
-@Bean
 public class RedisGitStorage implements IStorage<RedisData> {
 
-    @Injector
+    @Autowire
     @Getter
     private DB gitManager;
 

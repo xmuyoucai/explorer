@@ -1,6 +1,6 @@
-package com.muyoucai.core;
+package com.muyoucai.framework;
 
-import com.muyoucai.annotation.Bean;
+import com.muyoucai.framework.annotation.Bean;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -14,7 +14,6 @@ import java.util.Properties;
  * @Version 1.0
  **/
 @Slf4j
-@Bean
 public class Settings {
 
     public static final int WIDTH = 1355, HEIGHT = 760;

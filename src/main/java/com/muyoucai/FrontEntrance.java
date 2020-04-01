@@ -1,7 +1,7 @@
 package com.muyoucai;
 
-import com.muyoucai.core.ApplicationContext;
-import com.muyoucai.core.Settings;
+import com.muyoucai.framework.ApplicationContext;
+import com.muyoucai.framework.Settings;
 import com.muyoucai.view.FxUtils;
 import com.muyoucai.view.View;
 import com.muyoucai.view.ViewManager;

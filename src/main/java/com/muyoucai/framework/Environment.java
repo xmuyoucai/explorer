@@ -1,4 +1,4 @@
-package com.muyoucai.core;
+package com.muyoucai.framework;
 
 import com.google.common.collect.Maps;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package com.muyoucai.view.controller;
 
-import com.muyoucai.core.ApplicationContext;
+import com.muyoucai.framework.ApplicationContext;
 import com.muyoucai.view.View;
 import com.muyoucai.view.FxUtils;
 import javafx.event.ActionEvent;

@@ -1,8 +1,10 @@
 package com.muyoucai.config;
 
-import com.muyoucai.annotation.Configuration;
-import com.muyoucai.annotation.Injector;
-import com.muyoucai.core.Environment;
+import com.muyoucai.framework.annotation.Bean;
+import com.muyoucai.framework.annotation.Configuration;
+import com.muyoucai.framework.annotation.Autowire;
+import com.muyoucai.framework.Environment;
+import lombok.AllArgsConstructor;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
@@ -15,12 +17,22 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 @Configuration
 public class AppConfig {
 
-    @Injector
+    @Autowire
     private Environment env;
 
-    // @Bean
+    @Bean
     public CredentialsProvider credentialsProvider(){
-        return new UsernamePasswordCredentialsProvider(env.getString("git.user"), env.getString("git.pass"));
+        return new UsernamePasswordCredentialsProvider("1111", "222");
+    }
+
+    @Bean
+    public MMM mmm(){
+        return new MMM(credentialsProvider());
+    }
+
+    @AllArgsConstructor
+    public static class MMM {
+        private CredentialsProvider credentialsProvider;
     }
 
 }

@@ -20,7 +20,7 @@ import java.util.jar.JarFile;
 public class ClassUtil {
 
     public static void main(String[] args) throws Exception {
-        List<Class> classes = ClassUtil.getAllClassByInterface(Class.forName("com.muyoucai.annotation.Bean"));
+        List<Class> classes = ClassUtil.getAllClassByInterface(Class.forName("com.muyoucai.framework.annotation.Bean"));
         for (Class clas : classes) {
             System.out.println(clas.getName());
         }
