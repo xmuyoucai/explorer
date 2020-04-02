@@ -45,6 +45,10 @@ public class BeanFactory {
         return byNameBeans.get(name);
     }
 
+    public boolean containsBean(Class<?> clz){
+        return byTypeBeans.containsKey(clz);
+    }
+
     public Object getBeanByType(Class<?> clz){
         return byTypeBeans.get(clz);
     }

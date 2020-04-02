@@ -23,9 +23,6 @@ public class ApplicationContext {
 
     public static final FrontEntrance FRONT_ENTRANCE = new FrontEntrance();
 
-    private static final Map<String, BeanDefinition> DEFINITIONS = Maps.newHashMap();
-    private static final Map<String, Object> BY_TYPE_BEANS = Maps.newHashMap();
-
     @Getter
     private static BeanFactory beanFactory;
 
@@ -39,23 +36,11 @@ public class ApplicationContext {
         beanFactory.displayAllBeans();
     }
 
-    public static <T> T getBean2(Class<T> clz) {
-        return (T) BY_TYPE_BEANS.get(clz.getCanonicalName());
+    public static boolean containsBean(Class<?> clz) {
+        return beanFactory.containsBean(clz);
     }
 
     public static <T> T getBean(Class<T> clz) {
-        Object bean = BY_TYPE_BEANS.get(clz.getCanonicalName());
-        if (bean != null) {
-            log.info("Direct return cached bean : {}", clz.getCanonicalName());
-            return (T) bean;
-        }
-        BeanDefinition def = DEFINITIONS.get(clz.getCanonicalName());
-        if (def != null) {
-            if (def.getCreation() != null && def.getProxy() != null) {
-                return (T) ReflectKit.creationInvoke(def.getCreation(), def.getProxy());
-            }
-        }
-        throw new CustomException(String.format("not found bean definition of %s", clz.getCanonicalName()));
+        return (T) beanFactory.getBeanByType(clz);
     }
-
 }
