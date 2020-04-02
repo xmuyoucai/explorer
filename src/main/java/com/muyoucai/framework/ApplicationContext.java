@@ -2,15 +2,19 @@ package com.muyoucai.framework;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.muyoucai.config.AppConfig;
 import com.muyoucai.framework.annotation.*;
 import com.muyoucai.ex.CustomException;
 import com.muyoucai.FrontEntrance;
+import com.muyoucai.util.ClassUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class ApplicationContext {
@@ -31,8 +35,10 @@ public class ApplicationContext {
 
         String[] scanPackages = new String[]{"com.muyoucai.config"};
 
+        Set<Class<?>> configurationSet = Sets.newHashSet();
         for (String scanPackage : scanPackages) {
-            ReflectKit.scan(scanPackage).forEach(s -> instantiate(s));
+            Set<String> set = ReflectKit.scan(scanPackage);
+            configurationSet.addAll(set.stream().map(x -> ReflectKit.forName(x)).filter(clz -> ReflectKit.has(Configuration.class, clz)).collect(Collectors.toSet()));
         }
 
         getBean(AppConfig.MMM.class);
