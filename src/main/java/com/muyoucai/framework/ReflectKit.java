@@ -40,7 +40,7 @@ public class ReflectKit {
 
     public static <T> T newInstance(Class<T> clz){
         try {
-            log.info("Create bean by class : {}", clz.getCanonicalName());
+            log.info("Bean instanced : {}", clz.getCanonicalName());
             return clz.newInstance();
         } catch (Exception e) {
             log.error("", e);
@@ -50,6 +50,7 @@ public class ReflectKit {
 
     public static Object creationInvoke(Method creation, Object o){
         try {
+            log.info("Bean created : {}", creation.getReturnType().getCanonicalName());
             return creation.invoke(o);
         } catch (Exception e) {
             log.error("", e);

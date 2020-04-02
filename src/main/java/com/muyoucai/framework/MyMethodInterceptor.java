@@ -18,17 +18,17 @@ public class MyMethodInterceptor implements MethodInterceptor {
 
     @Override
     public Object intercept(Object obj, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
-        log.debug("Invoke {}.{}()", obj.getClass().getCanonicalName(), method.getName());
-        if(method.getAnnotation(Bean.class) != null) {
-            Object returnObj = ApplicationContext.getBean2(method.getReturnType());
-            if(returnObj != null){
-                log.info("Bean has created, direct return cached bean : {}", method.getReturnType().getCanonicalName());
-                return returnObj;
-            }
-        }
+//        log.debug("Invoke {}.{}()", obj.getClass().getCanonicalName(), method.getName());
+//        if(method.getAnnotation(Bean.class) != null) {
+//            Object returnObj = ApplicationContext.getBean2(method.getReturnType());
+//            if(returnObj != null){
+//                log.info("Bean has created, direct return cached bean : {}", method.getReturnType().getCanonicalName());
+//                return returnObj;
+//            }
+//        }
         Object bean = methodProxy.invokeSuper(obj, args);
-        log.info("Create bean in proxy method invoke : {}", method.getReturnType().getCanonicalName());
-        ApplicationContext.cacheBeanByType(method.getReturnType(), bean);
+//        log.info("Create bean in proxy method invoke : {}", method.getReturnType().getCanonicalName());
+//        ApplicationContext.cacheBeanByType(method.getReturnType(), bean);
         return bean;
     }
 
