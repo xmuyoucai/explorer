@@ -21,8 +21,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ApplicationContext {
 
-    public static final FrontEntrance FRONT_ENTRANCE = new FrontEntrance();
-
     @Getter
     private static BeanFactory beanFactory;
 

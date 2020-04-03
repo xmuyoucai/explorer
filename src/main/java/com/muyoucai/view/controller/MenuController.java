@@ -1,5 +1,6 @@
 package com.muyoucai.view.controller;
 
+import com.muyoucai.FrontEntrance;
 import com.muyoucai.framework.ApplicationContext;
 import com.muyoucai.view.View;
 import com.muyoucai.view.FxUtils;
@@ -28,13 +29,13 @@ public class MenuController implements Initializable {
                 MenuItem mi = (MenuItem) event.getSource();
                 String text = mi.getText();
                 if("Redis".equals(text)){
-                    ApplicationContext.FRONT_ENTRANCE.switchTo(View.REDIS);
+                    FrontEntrance.switchTo(View.REDIS);
                 }
                 if("Zookeeper".equals(text)){
-                    ApplicationContext.FRONT_ENTRANCE.switchTo(View.ZOOKEEPER);
+                    FrontEntrance.switchTo(View.ZOOKEEPER);
                 }
                 if("首页".equals(text)){
-                    ApplicationContext.FRONT_ENTRANCE.switchTo(View.HOME);
+                    FrontEntrance.switchTo(View.HOME);
                 }
             }
 

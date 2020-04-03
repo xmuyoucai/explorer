@@ -30,10 +30,10 @@ public class FrontEntrance extends Application {
 
     @Getter
     @Setter
-    private BorderPane root;
+    private static BorderPane root;
 
     @Getter
-    private final ViewManager viewManager = new ViewManager();
+    private static final ViewManager viewManager = new ViewManager();
 
     public void initialize() throws IOException {
 
@@ -55,7 +55,7 @@ public class FrontEntrance extends Application {
         primaryStage.show();
     }
 
-    public void switchTo(View view) throws IOException {
+    public static void switchTo(View view) throws IOException {
         log.info("切换至 {} ...", view.getName());
         root.setCenter(viewManager.retrieval(view));
     }
