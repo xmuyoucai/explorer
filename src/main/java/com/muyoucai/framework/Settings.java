@@ -19,4 +19,6 @@ public class Settings {
     public static final int WIDTH = 1355, HEIGHT = 760;
     public static final String TITLE = "One man’s crappy software is another man’s full time job";
 
+    public static final String STATUS_FILENAME = "status.json";
+
 }

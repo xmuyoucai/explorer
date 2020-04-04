@@ -14,7 +14,8 @@ import java.io.File;
 public class GitUtils {
 
     public static Repository init(String repo) {
-        try (Git git = Git.init().setDirectory(FileKit.openOrCreateDir(repo)).setBare(true).call()) {
+        try (Git git = Git.init().setDirectory(FileKit.safelyCreateDir(repo)).setBare(true).call()) {
+            log.info("init repo : {}", repo);
             return git.getRepository();
         } catch (Exception e) {
             log.error("", e);
@@ -25,10 +26,11 @@ public class GitUtils {
     public static Repository create(String repo, String uri, CredentialsProvider credentialsProvider) {
         try (Git result = Git.cloneRepository()
                 .setURI(uri)
-                .setDirectory(FileKit.openOrCreateDir(repo))
+                .setDirectory(FileKit.safelyCreateDir(repo))
                 .setCredentialsProvider(credentialsProvider)
-                .setBare(true)
+                // .setBare(true)
                 .call()) {
+            log.info("create repo : {}, {}", repo, uri);
             return result.getRepository();
         } catch (Exception e) {
             log.error("", e);
@@ -37,7 +39,7 @@ public class GitUtils {
     }
 
     public static Repository open(String repo){
-        try (Git git = Git.open(FileKit.openOrCreateDir(repo))) {
+        try (Git git = Git.open(FileKit.safelyCreateDir(repo))) {
             return git.getRepository();
         } catch (Exception e) {
             log.error("", e);

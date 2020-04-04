@@ -1,6 +1,7 @@
 package com.muyoucai.framework;
 
 import com.muyoucai.repository.RedisServerRepository;
+import com.muyoucai.service.SystemService;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,8 +19,8 @@ public class ApplicationContext {
         beanFactory = new BeanFactory("com.muyoucai");
         beanFactory.createAllBeans();
         beanFactory.displayAllBeans();
-        RedisServerRepository repository = ApplicationContext.getBean(RedisServerRepository.class);
-        repository.init();
+
+        getBean(SystemService.class).initialize();
     }
 
     public static boolean containsBean(Class<?> clz) {

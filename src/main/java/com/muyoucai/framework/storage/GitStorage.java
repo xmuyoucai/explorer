@@ -26,7 +26,7 @@ public abstract class GitStorage<T> implements Storage<T> {
     // 文件相对路径
     private String filepath;
     // 本地 repo 目录，远程 uri
-    protected String dir, uri;
+    protected String baseDir, statusFile, gitDir, gitUri;
     // 认证凭证
     @Autowired
     protected CredentialsProvider credentialsProvider;
@@ -49,22 +49,28 @@ public abstract class GitStorage<T> implements Storage<T> {
             this.filepath = getEntityClass().getCanonicalName();
         }
 
-        this.dir = env.getString("git.dir");
-        this.uri = env.getString("git.uri");
+        this.gitDir = env.getString("git.dir");
+        this.gitUri = env.getString("git.uri");
 
-        if(!FileKit.exists(dir)){
-            Preconditions.checkArgument(Strings.isNullOrEmpty(dir), "please configure 'git.repo' entry");
-            Preconditions.checkArgument(Strings.isNullOrEmpty(uri), "please configure 'git.uri' entry");
-            Preconditions.checkArgument(credentialsProvider != null, "Had you configured a org.eclipse.jgit.transport.CredentialsProvider bean ?");
-            FileKit.openOrCreateDir(dir);
-            GitUtils.create(dir, uri, credentialsProvider);
+        this.baseDir = env.getString("epl.baseDir");
+        this.statusFile = "status.json";
+
+        if(!FileKit.exists(baseDir)){
+            FileKit.safelyCreateDir(baseDir);
         }
+        String statusFilepath = String.format("%s%s", baseDir, statusFile);
+        if(FileKit.exists(statusFilepath)){
+            FileKit.safelyCreateFile(statusFilepath);
+        }
+        FileKit.safelyCreateFile(statusFile);
+        FileKit.safelyCreateDir(gitDir);
+        GitUtils.create(gitDir, gitUri, credentialsProvider);
     }
 
     @Override
     public T get() {
-        GitUtils.pull(dir, credentialsProvider);
-        String json = StreamKit.read(fullPath());
+        GitUtils.pull(gitDir, credentialsProvider);
+        String json = StreamKit.read(absolutelyFilepath());
         log.debug("load data : {}", json);
         return JSON.toJavaObject(JSON.parseObject(json), getEntityClass());
     }
@@ -73,12 +79,12 @@ public abstract class GitStorage<T> implements Storage<T> {
     public void save(T data) {
         String json = JSON.toJSONString(data);
         log.debug("persist data : {}", json);
-        StreamKit.write(json, fullPath());
-        GitUtils.push(dir(), credentialsProvider);
+        StreamKit.write(json, absolutelyFilepath());
+        GitUtils.push(absolutelyGitDir(), credentialsProvider);
     }
 
-    private String fullPath(){
-        return dir + filepath();
+    private String absolutelyFilepath(){
+        return gitDir + filepath();
     }
 
     private String filepath(){
@@ -91,17 +97,17 @@ public abstract class GitStorage<T> implements Storage<T> {
         return filepath;
     }
 
-    private String dir(){
-        if(Strings.isNullOrEmpty(dir)){
-            dir = "D:/epl/db";
+    private String absolutelyGitDir(){
+        if(Strings.isNullOrEmpty(gitDir)){
+            gitDir = baseDir + "/db";
         }
-        if(dir.endsWith("/")){
-            dir = dir.substring(0, dir.lastIndexOf("/"));
+        if(gitDir.endsWith("/")){
+            gitDir = gitDir.substring(0, gitDir.lastIndexOf("/"));
         }
-        if(!FileKit.exists(dir)){
-            FileKit.openOrCreateDir(dir);
+        if(!FileKit.exists(gitDir)){
+            FileKit.safelyCreateDir(gitDir);
         }
-        return dir;
+        return gitDir;
     }
 
 }
