@@ -1,12 +1,11 @@
 package com.muyoucai.framework.storage;
 
 import com.alibaba.fastjson.JSON;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.muyoucai.framework.Environment;
+import com.muyoucai.framework.ReflectKit;
 import com.muyoucai.framework.annotation.Autowired;
 import com.muyoucai.framework.annotation.GitFile;
-import com.muyoucai.util.ex.FilepathNotConfiguredException;
 import com.muyoucai.util.FileKit;
 import com.muyoucai.util.GitUtils;
 import com.muyoucai.util.StreamKit;
@@ -22,11 +21,6 @@ import org.eclipse.jgit.transport.CredentialsProvider;
  **/
 @Slf4j
 public abstract class GitStorage<T> implements Storage<T> {
-
-    // 文件相对路径
-    private String filepath;
-    // 本地 repo 目录，远程 uri
-    protected String baseDir, statusFile, gitDir, gitUri;
     // 认证凭证
     @Autowired
     protected CredentialsProvider credentialsProvider;
@@ -37,40 +31,14 @@ public abstract class GitStorage<T> implements Storage<T> {
     public abstract Class<T> getEntityClass();
 
     @Override
-    public void init() {
-        log.info("env : {}", JSON.toJSONString(env));
-        GitFile gitFile = getEntityClass().getAnnotation(GitFile.class);
-        if(gitFile == null){
-            throw new MissingGitFileAnnotationException(getEntityClass().getCanonicalName());
-        }
-        if(!Strings.isNullOrEmpty(gitFile.value())){
-            this.filepath = gitFile.value();
-        } else {
-            this.filepath = getEntityClass().getCanonicalName();
-        }
-
-        this.gitDir = env.getString("git.dir");
-        this.gitUri = env.getString("git.uri");
-
-        this.baseDir = env.getString("epl.baseDir");
-        this.statusFile = "status.json";
-
-        if(!FileKit.exists(baseDir)){
-            FileKit.safelyCreateDir(baseDir);
-        }
-        String statusFilepath = String.format("%s%s", baseDir, statusFile);
-        if(FileKit.exists(statusFilepath)){
-            FileKit.safelyCreateFile(statusFilepath);
-        }
-        FileKit.safelyCreateFile(statusFile);
-        FileKit.safelyCreateDir(gitDir);
-        GitUtils.create(gitDir, gitUri, credentialsProvider);
-    }
-
-    @Override
     public T get() {
-        GitUtils.pull(gitDir, credentialsProvider);
-        String json = StreamKit.read(absolutelyFilepath());
+        String gitDir = getGitDir();
+        // GitUtils.pull(gitDir, credentialsProvider);
+        String filepath = getFullPath();
+        if(!FileKit.exists(filepath)){
+            save(ReflectKit.newInstance(getEntityClass()));
+        }
+        String json = StreamKit.read(filepath);
         log.debug("load data : {}", json);
         return JSON.toJavaObject(JSON.parseObject(json), getEntityClass());
     }
@@ -79,35 +47,39 @@ public abstract class GitStorage<T> implements Storage<T> {
     public void save(T data) {
         String json = JSON.toJSONString(data);
         log.debug("persist data : {}", json);
-        StreamKit.write(json, absolutelyFilepath());
-        GitUtils.push(absolutelyGitDir(), credentialsProvider);
-    }
-
-    private String absolutelyFilepath(){
-        return gitDir + filepath();
-    }
-
-    private String filepath(){
-        if(Strings.isNullOrEmpty(filepath)){
-            throw new FilepathNotConfiguredException();
+        String filepath = getFullPath();
+        if(!FileKit.exists(filepath)) {
+            FileKit.safelyCreateFile(filepath);
         }
-        if(!filepath.startsWith("/")){
-            filepath = "/" + filepath;
+        StreamKit.write(json, filepath);
+        // GitUtils.push(getGitDir(), credentialsProvider);
+    }
+
+    private String getBaseDir(){
+        return env.get("epl.base-dir");
+    }
+
+    private String getGitDir(){
+        return String.format("%s/%s", getBaseDir(), env.get("git.dir"));
+    }
+
+    private String getFilepath() {
+        log.info("env : {}", JSON.toJSONString(env));
+        GitFile gitFile = getEntityClass().getAnnotation(GitFile.class);
+        if(gitFile == null){
+            throw new MissingGitFileAnnotationException(getEntityClass().getCanonicalName());
+        }
+        String filepath;
+        if(!Strings.isNullOrEmpty(gitFile.value())){
+            filepath = gitFile.value();
+        } else {
+            filepath =  getEntityClass().getCanonicalName();
         }
         return filepath;
     }
 
-    private String absolutelyGitDir(){
-        if(Strings.isNullOrEmpty(gitDir)){
-            gitDir = baseDir + "/db";
-        }
-        if(gitDir.endsWith("/")){
-            gitDir = gitDir.substring(0, gitDir.lastIndexOf("/"));
-        }
-        if(!FileKit.exists(gitDir)){
-            FileKit.safelyCreateDir(gitDir);
-        }
-        return gitDir;
+    private String getFullPath(){
+        return String.format("%s/%s", getGitDir(), getFilepath());
     }
 
 }

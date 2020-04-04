@@ -1,7 +1,11 @@
 package com.muyoucai.view;
 
+import com.muyoucai.util.ex.CustomException;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import lombok.extern.slf4j.Slf4j;
@@ -41,9 +45,30 @@ public class FxUtils {
         alert.showAndWait();
     }
 
-    public static <T> T load(String fxml) throws IOException {
+    public static <T> T load(String fxml) {
         log.info("加载 [{}] ...", fxml);
-        return FXMLLoader.load(FxUtils.class.getResource(fxml));
+        try {
+            return FXMLLoader.load(FxUtils.class.getResource(fxml));
+        } catch (IOException e) {
+            log.error("", e);
+            throw new CustomException(e);
+        }
+    }
+
+    public static TextField newTF(String prompt, String text){
+        TextField tf = new TextField();
+        tf.setText(text);
+        tf.setPrefWidth(200);
+        tf.setPromptText(prompt);
+        return tf;
+    }
+
+    public static PasswordField newPF(String prompt, String text){
+        PasswordField pf = new PasswordField();
+        pf.setText(text);
+        pf.setPrefWidth(200);
+        pf.setPromptText(prompt);
+        return pf;
     }
 
 }

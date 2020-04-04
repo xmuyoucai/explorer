@@ -18,8 +18,4 @@ public class SystemConfigRepository extends FileStorage<SystemConfig> {
         return SystemConfig.class;
     }
 
-    @Override
-    public void init() {
-
-    }
 }

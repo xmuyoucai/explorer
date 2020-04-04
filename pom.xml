@@ -24,6 +24,12 @@
             <version>3.3.0</version>
         </dependency>
 
+        <!-- commons-beanutils -->
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.9.4</version>
+        </dependency>
 
         <!-- org.eclipse.jgit -->
         <dependency>

@@ -8,6 +8,7 @@ import com.muyoucai.view.ViewManager;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,7 +36,13 @@ public class FrontEntrance extends Application {
     @Getter
     private static final ViewManager viewManager = new ViewManager();
 
-    public void initialize() throws IOException {
+    @Override
+    public void start(Stage primaryStage) throws IOException {
+        setPrimaryStage(primaryStage);
+        initialize();
+    }
+
+    public void initialize() {
 
         log.info("加载主框架 ...");
         root = FxUtils.load(View.LAYOUT.getFxml());
@@ -55,15 +62,9 @@ public class FrontEntrance extends Application {
         primaryStage.show();
     }
 
-    public static void switchTo(View view) throws IOException {
+    public static void switchTo(View view) {
         log.info("切换至 {} ...", view.getName());
         root.setCenter(viewManager.retrieval(view));
-    }
-
-    @Override
-    public void start(Stage primaryStage) throws IOException {
-        setPrimaryStage(primaryStage);
-        initialize();
     }
 
     public static void main(String[] args) {

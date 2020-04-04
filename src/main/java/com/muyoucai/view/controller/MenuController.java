@@ -24,24 +24,18 @@ public class MenuController implements Initializable {
     }
 
     public void switchTo(ActionEvent event){
-        try {
-            if(event.getSource() instanceof MenuItem){
-                MenuItem mi = (MenuItem) event.getSource();
-                String text = mi.getText();
-                if("Redis".equals(text)){
-                    FrontEntrance.switchTo(View.REDIS);
-                }
-                if("Zookeeper".equals(text)){
-                    FrontEntrance.switchTo(View.ZOOKEEPER);
-                }
-                if("首页".equals(text)){
-                    FrontEntrance.switchTo(View.HOME);
-                }
+        if(event.getSource() instanceof MenuItem){
+            MenuItem mi = (MenuItem) event.getSource();
+            String text = mi.getText();
+            if("Redis".equals(text)){
+                FrontEntrance.switchTo(View.REDIS);
             }
-
-        } catch (IOException e) {
-            log.error("", e);
-            FxUtils.error(e.getMessage());
+            if("Zookeeper".equals(text)){
+                FrontEntrance.switchTo(View.ZOOKEEPER);
+            }
+            if("首页".equals(text)){
+                FrontEntrance.switchTo(View.HOME);
+            }
         }
     }
 }

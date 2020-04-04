@@ -24,13 +24,11 @@
    <top>
       <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
-            <Label fx:id="serverLBL" prefHeight="23.0" prefWidth="167.0" text="192.168.1.26:6379" textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS">
-               <font>
-                  <Font name="System Italic" size="14.0" />
-               </font>
-            </Label>
+            <ComboBox fx:id="servers" prefHeight="23.0" prefWidth="175.0" />
             <TextField fx:id="patternTF" text="*" />
           <Button mnemonicParsing="false" onAction="#query" text="查询" />
+            <Button mnemonicParsing="false" onAction="#add" text="新增" />
+            <Button mnemonicParsing="false" onAction="#del" text="删除" />
             <Button mnemonicParsing="false" onAction="#info" text="服务器信息" />
         </items>
       </ToolBar>

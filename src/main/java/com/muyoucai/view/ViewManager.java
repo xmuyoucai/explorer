@@ -24,7 +24,7 @@ public class ViewManager {
         this.views = Maps.newHashMap();
     }
 
-    public BorderPane retrieval(View view) throws IOException {
+    public BorderPane retrieval(View view) {
         BorderPane c = views.get(view);
         if(c != null){
             return c;

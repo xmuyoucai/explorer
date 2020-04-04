@@ -1,14 +1,16 @@
 package com.muyoucai.view.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
 import com.muyoucai.entity.po.RedisServer;
 import com.muyoucai.framework.ApplicationContext;
-import com.muyoucai.framework.Settings;
 import com.muyoucai.manager.RJedis;
 import com.muyoucai.repository.RedisServerRepository;
+import com.muyoucai.service.RedisServerService;
 import com.muyoucai.util.CollectionKit;
 import com.muyoucai.view.FxUtils;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
@@ -16,10 +18,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.FlowPane;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URL;
+import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class RedisController implements Initializable {
@@ -36,19 +43,118 @@ public class RedisController implements Initializable {
     @FXML
     private TextArea serverInfoTA;
 
-    private RJedis rJedis;
+    @FXML
+    private ComboBox servers;
+
+    private RedisServerService redisServerService;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         log.info("Redis界面控制器初始化 ...");
-
-        RedisServer redisServer = ApplicationContext.getBean(RedisServerRepository.class).get();
-        if(redisServer != null && !CollectionKit.isEmpty(redisServer.getItems())){
-//            rJedis = new RJedis(arr[0], Integer.parseInt(arr[1]), arr.length <= 2 ? null : arr[2]);
-//            serverInfoTA.setText(rJedis.info());
-        }
+        this.redisServerService = ApplicationContext.getBean(RedisServerService.class);
+        refreshServers();
         initTable();
+    }
+
+    private void refreshServers() {
+        servers.getItems().clear();
+        List<RedisServer.Item> items = redisServerService.list();
+        if (!CollectionKit.isEmpty(items)) {
+            servers.getItems().addAll(FXCollections.observableArrayList(items.stream().map(i -> i.getName()).collect(Collectors.toList())));
+            servers.getSelectionModel().selectFirst();
+        }
+    }
+
+    public void query(ActionEvent event) {
+        String pattern = patternTF.getText().trim();
+        if (Strings.isNullOrEmpty(pattern)) {
+            FxUtils.error("请输入匹配字符串");
+            return;
+        }
+        if(servers.getSelectionModel().getSelectedItem() != null) {
+            RJedis rJedis = createJedis();
+            tv.setItems(FXCollections.observableArrayList(rJedis.values(pattern)));
+        }
+    }
+
+    public void info(ActionEvent event) {
+        if(servers.getSelectionModel().getSelectedItem() != null) {
+            RJedis rJedis = createJedis();
+            serverInfoTA.setText(rJedis.info());
+        }
+    }
+
+    public void add(ActionEvent event) {
+
+        Dialog<RedisServer.Item> dialog = new Dialog<>();
+        dialog.setTitle("添加");
+        dialog.setResizable(true);
+
+        FlowPane pane = new FlowPane();
+
+        pane.setPrefWidth(210);
+        pane.setVgap(5);
+
+        TextField nameTF = FxUtils.newTF("Name", "");
+        pane.getChildren().add(nameTF);
+
+        TextField hostTF = FxUtils.newTF("Host", "");
+        pane.getChildren().add(hostTF);
+
+        TextField portTF = FxUtils.newTF("Port", "");
+        pane.getChildren().add(portTF);
+
+        PasswordField passTF = FxUtils.newPF("Password", "");
+        pane.getChildren().add(passTF);
+
+        dialog.getDialogPane().setContent(pane);
+
+
+        ButtonType btnOk = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+        ButtonType btnCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().add(btnOk);
+        dialog.getDialogPane().getButtonTypes().add(btnCancel);
+
+        final Button btOk = (Button) dialog.getDialogPane().lookupButton(btnOk);
+        btOk.addEventFilter(ActionEvent.ACTION, filter -> {
+            // Check whether some conditions are fulfilled
+            if(Strings.isNullOrEmpty(nameTF.getText())){
+                FxUtils.error("Name 不能为空");
+                filter.consume();
+                return;
+            }
+            if(Strings.isNullOrEmpty(hostTF.getText())){
+                FxUtils.error("Host 不能为空");
+                filter.consume();
+                return;
+            }
+            if(Strings.isNullOrEmpty(portTF.getText())){
+                FxUtils.error("Port 不能为空");
+                filter.consume();
+                return;
+            }
+        });
+
+        dialog.setResultConverter(o -> {
+            if (o == btnOk) {
+                if (!Strings.isNullOrEmpty(nameTF.getText())
+                        && !Strings.isNullOrEmpty(hostTF.getText())
+                        && !Strings.isNullOrEmpty(portTF.getText())) {
+                    return new RedisServer.Item(nameTF.getText(), hostTF.getText(), portTF.getText(), passTF.getText());
+                }
+            }
+            return null;
+        });
+
+        Optional<RedisServer.Item> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            log.info(JSON.toJSONString(result));
+            ApplicationContext.getBean(RedisServerService.class).saveOrUpdate(result.get());
+            refreshServers();
+            FxUtils.info("添加成功");
+        }
+
     }
 
     private void initTable() {
@@ -62,7 +168,7 @@ public class RedisController implements Initializable {
             final int index = i;
             column.setCellFactory(col -> {
                 TextFieldTableCell<RJedis.RedisItem, String> cell = new TextFieldTableCell<>();
-                if(index == 0 || index == 3){
+                if (index == 0 || index == 3) {
                     ContextMenu cm = new ContextMenu();
                     MenuItem miFz = new MenuItem("复制");
                     miFz.addEventHandler(EventType.ROOT, e -> {
@@ -88,16 +194,16 @@ public class RedisController implements Initializable {
         });
     }
 
-    public void query(ActionEvent event) {
-        String pattern = patternTF.getText().trim();
-        if (Strings.isNullOrEmpty(pattern)) {
-            FxUtils.error("请输入匹配字符串");
-            return;
+    public void del(ActionEvent event) {
+        if(servers.getSelectionModel().getSelectedItem() != null) {
+            redisServerService.del(servers.getSelectionModel().getSelectedItem().toString());
         }
-        tv.setItems(FXCollections.observableArrayList(rJedis.values(pattern)));
+        refreshServers();
+        FxUtils.info("删除成功");
     }
 
-    public void info(ActionEvent event) {
-        serverInfoTA.setText(rJedis.info());
+    private RJedis createJedis() {
+        RedisServer.Item item = redisServerService.get(servers.getSelectionModel().getSelectedItem().toString());
+        return new RJedis(item.getHost(), Integer.parseInt(item.getPort()), item.getPass());
     }
 }

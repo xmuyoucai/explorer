@@ -1,7 +1,9 @@
 package com.muyoucai.entity.po;
 
 import com.muyoucai.framework.annotation.GitFile;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -19,10 +21,14 @@ public class RedisServer {
     @Setter
     private List<Item> items;
 
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Item {
         @Setter
         @Getter
-        private String id, host, port, pass;
+        private String name, host, port, pass;
     }
 
 }
+
+

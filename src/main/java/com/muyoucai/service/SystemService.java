@@ -45,7 +45,8 @@ public class SystemService {
         // 读取状态文件
         SystemConfig sc = scRepository.get();
         if(!sc.getStorageInitialized().booleanValue()){
-            GitUtils.create(baseD + "/" + env.get("git.dir"), env.get("git.uri"), credentialsProvider);
+            String absolutelyGitDir = String.format("%s/%s", baseD, env.get("git.dir"));
+            GitUtils.create(absolutelyGitDir, env.get("git.uri"), credentialsProvider);
             sc.setStorageInitialized(true);
             scRepository.save(sc);
         }

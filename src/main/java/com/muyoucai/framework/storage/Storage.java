@@ -6,11 +6,6 @@ package com.muyoucai.framework.storage;
 public interface Storage<T> {
 
     /**
-     * 初始化存储
-     */
-    void init();
-
-    /**
      * 获取数据
      *
      * @return
