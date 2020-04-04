@@ -9,12 +9,20 @@ import com.muyoucai.framework.Environment;
 import com.muyoucai.framework.Settings;
 import com.muyoucai.manager.Zoo;
 import com.muyoucai.view.FxUtils;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTreeTableCell;
+import javafx.scene.control.cell.TextFieldTreeCell;
+import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.util.Callback;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URL;
@@ -49,7 +57,7 @@ public class ZookeeperController implements Initializable {
             String zooServers = ApplicationContext.getBean(Environment.class).getString("zoo.servers");
             if (!Strings.isNullOrEmpty(zooServers)) {
                 for (String address : zooServers.split(",")) {
-                    basic.getChildren().add(new Zoo.Node(address));
+                    basic.getChildren().add(new Zoo(address).getData());
                 }
             }
 
@@ -66,26 +74,21 @@ public class ZookeeperController implements Initializable {
             String[][] tableCfg = new String[][]{{"名称", "name", "300"}, {"路径", "path", "300"}, {"数据", "data", "700"}};
             for (String[] columnCfg : tableCfg) {
                 TreeTableColumn<Zoo.Node, String> column = new TreeTableColumn<>(columnCfg[0]);
-                column.setCellValueFactory(new TreeItemPropertyValueFactory<>(columnCfg[1]));
+                column.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<Zoo.Node, String>, ObservableValue<String>>() {
+                    @Override
+                    public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<Zoo.Node, String> param) {
+                        return new SimpleStringProperty(param.getValue().getValue().getPath());
+                    }
+                });
                 column.setPrefWidth(Integer.parseInt(columnCfg[2]));
                 column.setSortable(false);
-                column.setCellFactory(col -> {
-                    TreeTableCell<Zoo.Node, String> cell = new TreeTableCell(){
-
-                    };
-//                    ContextMenu cm = new ContextMenu();
-//                    MenuItem miSx = new MenuItem("刷新");
-//                    miSx.addEventHandler(EventType.ROOT, e -> {
-//                        for (TreeItem<Zoo.Node> root : getSelectedLevel1Items()) {
-//                            Zoo zoo = new Zoo(root.getValue().getName());
-//                            TreeItem<Zoo.Node> ti = roots.get(root.getValue().getId());
-//                            ti.getChildren().clear();
-//                            ti.getChildren().add(transfer(zoo.getData()));
-//                        }
-//                    });
-//                    cm.getItems().add(miSx);
-//                    cell.setContextMenu(cm);
-                    return cell;
+                System.out.println(column.getCellFactory());
+                column.setCellFactory(new Callback<TreeTableColumn<Zoo.Node, String>, TreeTableCell<Zoo.Node, String>>() {
+                    @Override
+                    public TreeTableCell<Zoo.Node, String> call(TreeTableColumn<Zoo.Node, String> param) {
+                        TreeTableCell cell = new TextFieldTreeTableCell();
+                        return cell;
+                    }
                 });
                 table.getColumns().add(column);
             }
