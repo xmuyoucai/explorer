@@ -83,22 +83,22 @@ public class RJedis {
             if(jedis.exists(key)){
                 String type = jedis.type(key);
                 if("string".equals(type)){
-                    return new RedisItem(key, type, 1, jedis.get(key));
+                    return new RedisItem(key, type, 1, jedis.get(key), jedis.ttl(key));
                 }
                 if("hash".equals(type)){
-                    return new RedisItem(key, type, jedis.hlen(key), JSON.toJSONString(jedis.hgetAll(key)));
+                    return new RedisItem(key, type, jedis.hlen(key), JSON.toJSONString(jedis.hgetAll(key)), jedis.ttl(key));
                 }
                 if("list".equals(type)){
                     long len = jedis.llen(key);
-                    return new RedisItem(key, type, len, JSON.toJSONString(jedis.lrange(key, 0, 100)));
+                    return new RedisItem(key, type, len, JSON.toJSONString(jedis.lrange(key, 0, 100)), jedis.ttl(key));
                 }
                 if("set".equals(type)){
                     long card = jedis.scard(key);
-                    return new RedisItem(key, type, card, JSON.toJSONString(jedis.smembers(key)));
+                    return new RedisItem(key, type, card, JSON.toJSONString(jedis.smembers(key)), jedis.ttl(key));
                 }
                 if("zset".equals(type)){
                     long card = jedis.zcard(key);
-                    return new RedisItem(key, type, card, JSON.toJSONString(jedis.zrange(key, 0, 100)));
+                    return new RedisItem(key, type, card, JSON.toJSONString(jedis.zrange(key, 0, 100)), jedis.ttl(key));
                 }
             }
             return null;
@@ -126,6 +126,7 @@ public class RJedis {
         private String type;
         private long count;
         private Object value;
+        private long ttl;
 
         public Object gi(int i){
             switch (i){
@@ -134,8 +135,10 @@ public class RJedis {
                 case 1:
                     return type;
                 case 2:
-                    return count;
+                    return ttl;
                 case 3:
+                    return count;
+                case 4:
                     return value;
             }
             return null;
