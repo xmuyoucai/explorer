@@ -1,7 +1,7 @@
 package com.muyoucai.util;
 
 import com.google.common.collect.Sets;
-import com.muyoucai.ex.CustomException;
+import com.muyoucai.util.ex.CustomException;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;

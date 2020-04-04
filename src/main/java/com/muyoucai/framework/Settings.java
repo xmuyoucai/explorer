@@ -19,16 +19,4 @@ public class Settings {
     public static final int WIDTH = 1355, HEIGHT = 760;
     public static final String TITLE = "One man’s crappy software is another man’s full time job";
 
-    public static final Properties PROPERTIES = new Properties();
-
-    static {
-        try (InputStream in = Settings.class.getClassLoader().getResourceAsStream("config.properties")) {
-            PROPERTIES.load(in);
-            log.info("Properties :");
-            PROPERTIES.forEach((k, v) -> log.info("{} : {}", k, v));
-        } catch (IOException e) {
-            log.error("加载配置文件失败", e);
-        }
-    }
-
 }

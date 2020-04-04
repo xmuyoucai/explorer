@@ -17,14 +17,14 @@ import java.lang.reflect.Method;
 public class MyMethodInterceptor implements MethodInterceptor {
 
     @Override
-    public Object intercept(Object obj, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+    public Object intercept(Object beanProxy, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
         if(method.getAnnotation(Bean.class) != null) {
             if(ApplicationContext.containsBean(method.getReturnType())){
                 log.info("Direct return cached bean : {}", method.getReturnType().getCanonicalName());
                 return ApplicationContext.getBean(method.getReturnType());
             }
         }
-        return methodProxy.invokeSuper(obj, args);
+        return methodProxy.invokeSuper(beanProxy, args);
     }
 
 }

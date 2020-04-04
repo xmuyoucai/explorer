@@ -1,4 +1,4 @@
-package com.muyoucai.ex;
+package com.muyoucai.util.ex;
 
 public class BeanNameConflictException extends CustomException {
 

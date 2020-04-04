@@ -1,8 +1,12 @@
 package com.muyoucai.view.controller;
 
 import com.google.common.base.Strings;
+import com.muyoucai.entity.po.RedisServer;
+import com.muyoucai.framework.ApplicationContext;
 import com.muyoucai.framework.Settings;
 import com.muyoucai.manager.RJedis;
+import com.muyoucai.repository.RedisServerRepository;
+import com.muyoucai.util.CollectionKit;
 import com.muyoucai.view.FxUtils;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -39,18 +43,15 @@ public class RedisController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         log.info("Redis界面控制器初始化 ...");
 
-        String redisConf = Settings.PROPERTIES.getProperty("redis.conf");
-        if (Strings.isNullOrEmpty(redisConf)) {
-            return;
+        RedisServer redisServer = ApplicationContext.getBean(RedisServerRepository.class).get();
+        if(redisServer != null && !CollectionKit.isEmpty(redisServer.getItems())){
+//            rJedis = new RJedis(arr[0], Integer.parseInt(arr[1]), arr.length <= 2 ? null : arr[2]);
+//            serverInfoTA.setText(rJedis.info());
         }
-        String[] arr = redisConf.split(",");
-        serverLBL.setText(arr[0] + ":" + arr[1]);
+        initTable();
+    }
 
-        rJedis = new RJedis(arr[0], Integer.parseInt(arr[1]), arr.length <= 2 ? null : arr[2]);
-
-        serverInfoTA.setText(rJedis.info());
-
-
+    private void initTable() {
         String[][] tableCfg = new String[][]{{"键", "key", "300"}, {"类型", "type", "50"}, {"数量", "count", "50"}, {"值", "value", "400"}};
         for (int i = 0; i < tableCfg.length; i++) {
             String[] columnCfg = tableCfg[i];

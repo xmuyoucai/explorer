@@ -1,6 +1,7 @@
 package com.muyoucai.framework;
 
 import com.google.common.collect.Maps;
+import com.muyoucai.framework.annotation.Component;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,6 +18,7 @@ import java.util.Properties;
  **/
 @Slf4j
 @Getter
+@Component
 public class Environment {
 
     private Map<Object, Object> cfg;
@@ -28,7 +30,7 @@ public class Environment {
             cfg = Maps.newHashMap();
             properties.forEach((k, v) -> cfg.put(k, v));
         } catch (IOException e) {
-            log.error("加载配置文件失败", e);
+            log.error("load 'config.properties' failed", e);
         }
     }
 

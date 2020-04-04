@@ -1,22 +1,8 @@
 package com.muyoucai.framework;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.muyoucai.config.AppConfig;
-import com.muyoucai.framework.annotation.*;
-import com.muyoucai.ex.CustomException;
-import com.muyoucai.FrontEntrance;
-import com.muyoucai.util.ClassUtil;
+import com.muyoucai.repository.RedisServerRepository;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class ApplicationContext {
@@ -29,9 +15,11 @@ public class ApplicationContext {
     }
 
     public static void run(String[] args) {
-        beanFactory = new BeanFactory("com.muyoucai.config");
+        beanFactory = new BeanFactory("com.muyoucai");
         beanFactory.createAllBeans();
         beanFactory.displayAllBeans();
+        RedisServerRepository repository = ApplicationContext.getBean(RedisServerRepository.class);
+        repository.init();
     }
 
     public static boolean containsBean(Class<?> clz) {

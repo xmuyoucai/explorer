@@ -10,7 +10,13 @@ public class CglibKit {
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(clz);
         enhancer.setCallback(new MyMethodInterceptor());
-        // log.info(clz.getCanonicalName());
+        return enhancer.create();
+    }
+
+    public static Object createAopProxy(Class<?> clz){
+        Enhancer enhancer = new Enhancer();
+        enhancer.setSuperclass(clz);
+        enhancer.setCallback(new AopMethodInterceptor());
         return enhancer.create();
     }
 

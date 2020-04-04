@@ -5,10 +5,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * @Description
+ * @Author lzy
+ * @Date 2020/4/4 11:46
+ * @Version 1.0
+ **/
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD})
-public @interface Autowire {
+@Target({ElementType.TYPE})
+public @interface GitFile {
 
-    String name() default "";
+    String value() default "";
 
 }

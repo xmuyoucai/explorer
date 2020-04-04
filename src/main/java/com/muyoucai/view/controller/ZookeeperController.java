@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.muyoucai.framework.ApplicationContext;
+import com.muyoucai.framework.Environment;
 import com.muyoucai.framework.Settings;
 import com.muyoucai.manager.Zoo;
 import com.muyoucai.view.FxUtils;
@@ -44,7 +46,7 @@ public class ZookeeperController implements Initializable {
 
             Zoo.Node basic = new Zoo.Node();
 
-            String zooServers = Settings.PROPERTIES.getProperty("zoo.servers");
+            String zooServers = ApplicationContext.getBean(Environment.class).getString("zoo.servers");
             if (!Strings.isNullOrEmpty(zooServers)) {
                 for (String address : zooServers.split(",")) {
                     basic.getChildren().add(new Zoo.Node(address));

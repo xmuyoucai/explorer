@@ -16,40 +16,43 @@ import java.lang.reflect.Method;
 @Setter
 public class BeanDefinition {
 
-    private String beanName;
-
+    /**
+     * Bean Name
+     */
+    private String name;
+    /**
+     * Bean Class
+     */
     private Class<?> clz;
-
-    private Object proxy;
-
+    /**
+     * 创建方法的所属对象
+     */
+    private Class<?> fromClz;
+    /**
+     * Bean Method of Creation
+     */
     private Method creation;
+    /**
+     * Bean Instance
+     */
+    private Object bean;
 
-    public BeanDefinition(Class<?> clz) {
+    private boolean instanced;
+
+    public BeanDefinition(String name, Class<?> clz, Class<?> fromClz, Method creation, Object bean) {
+        this.name = name;
         this.clz = clz;
-    }
-
-    public BeanDefinition(String beanName, Class<?> clz) {
-        this.beanName = beanName;
-        this.clz = clz;
-    }
-
-    public BeanDefinition(Object proxy, Method creation) {
-        this.proxy = proxy;
+        this.fromClz = fromClz;
         this.creation = creation;
-    }
-
-    public BeanDefinition(String beanName, Object proxy, Method creation) {
-        this.beanName = beanName;
-        this.proxy = proxy;
-        this.creation = creation;
+        this.bean = bean;
     }
 
     public boolean byType(){
-        return Strings.isNullOrEmpty(beanName);
+        return Strings.isNullOrEmpty(name);
     }
 
     public boolean instanceByCreation(){
-        return creation != null && proxy != null;
+        return creation != null;
     }
 
 }

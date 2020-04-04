@@ -1,17 +1,38 @@
 package com.muyoucai.framework;
 
 import com.google.common.collect.Sets;
-import com.muyoucai.ex.CustomException;
+import com.muyoucai.util.ex.CustomException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Set;
 
 @Slf4j
 public class ReflectKit {
+
+    public static Set<Field> getAllFields(Class<?> clz){
+        Set<Field> fields = Sets.newHashSet();
+        if(clz == null){
+            return fields;
+        }
+        fields.addAll(Arrays.asList(clz.getDeclaredFields()));
+        fields.addAll(getAllFields(clz.getSuperclass()));
+        return fields;
+    }
+
+    public static Set<Method> getAllMethods(Class<?> clz){
+        Set<Method> methods = Sets.newHashSet();
+        if(clz == null){
+            return methods;
+        }
+        methods.addAll(Arrays.asList(clz.getDeclaredMethods()));
+        methods.addAll(getAllMethods(clz.getSuperclass()));
+        return methods;
+    }
 
     public static Set<String> scan(String baseDir, String scanDir, Set<String> set){
         String fullPath = baseDir + scanDir;
@@ -50,7 +71,7 @@ public class ReflectKit {
 
     public static Object creationInvoke(Method creation, Object o){
         try {
-            log.info("Bean created : {}", creation.getReturnType().getCanonicalName());
+            log.info("Bean created : {} ({}, {})", creation.getReturnType().getCanonicalName(), creation, o);
             return creation.invoke(o);
         } catch (Exception e) {
             log.error("", e);

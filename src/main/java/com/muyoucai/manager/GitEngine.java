@@ -1,12 +1,10 @@
 package com.muyoucai.manager;
 
 import com.google.common.base.Strings;
-import com.muyoucai.framework.annotation.Bean;
-import com.muyoucai.framework.annotation.Value;
-import com.muyoucai.framework.Settings;
-import com.muyoucai.ex.CustomException;
+import com.muyoucai.util.ex.CustomException;
 import com.muyoucai.util.FileKit;
 import com.muyoucai.util.StreamKit;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.dircache.DirCache;
@@ -14,7 +12,6 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.PushResult;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
 import java.io.File;
 
@@ -22,26 +19,16 @@ import java.io.File;
  * @author lzy
  */
 @Slf4j
-public class DB {
+@Builder
+public class GitEngine {
 
-    @Value("git.localDir")
-    private String localDir;
-
-    @Value("git.uri")
-    private String uri;
-
-    @Value("git.user")
-    private String user;
-
-    @Value("git.pass")
-    private String pass;
-
+    // 本地 repo 目录，远程 uri
+    private String localDir, uri;
+    // 认证凭证
     private CredentialsProvider credentialsProvider;
 
-    public DB() {
-        String user = Settings.PROPERTIES.getProperty("git.user");
-        String pass = Settings.PROPERTIES.getProperty("git.pass");
-        credentialsProvider = new UsernamePasswordCredentialsProvider(user, pass);
+    public void setCredentialsProvider(CredentialsProvider credentialsProvider){
+        this.credentialsProvider = credentialsProvider;
     }
 
     public boolean exists(){
@@ -54,12 +41,6 @@ public class DB {
     public void create(){
         if(Strings.isNullOrEmpty(uri)){
             throw new CustomException("[git.uri] is not configured");
-        }
-        if(Strings.isNullOrEmpty(user)){
-            throw new CustomException("[git.user] is not configured");
-        }
-        if(Strings.isNullOrEmpty(pass)){
-            throw new CustomException("[git.pass] is not configured");
         }
         FileKit.openOrCreateDir(localDir);
         log.info("clone ..");
@@ -153,18 +134,6 @@ public class DB {
 
     public void write(String msg){
         StreamKit.write(msg, localDir + "/abc.txt");
-    }
-
-    public static void main(String[] args) {
-        DB gitManager = new DB();
-        System.out.println("write ...");
-        gitManager.write("2323232");
-        System.out.println("add ...");
-        gitManager.add();
-        System.out.println("commit ...");
-        gitManager.commit();
-        System.out.println("push ...");
-        gitManager.push();
     }
 
 }

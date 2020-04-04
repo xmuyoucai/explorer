@@ -1,7 +1,7 @@
 package com.muyoucai.util;
 
 import com.google.common.base.Strings;
-import com.muyoucai.ex.CustomException;
+import com.muyoucai.util.ex.CustomException;
 
 import java.io.*;
 
