@@ -15,19 +15,13 @@ import java.util.List;
  * @Version 1.0
  **/
 @GitFile
-public class RedisServer {
+@NoArgsConstructor
+@AllArgsConstructor
+public class RedisHost {
 
-    @Getter
     @Setter
-    private List<Item> items;
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Item {
-        @Setter
-        @Getter
-        private String name, host, port, pass;
-    }
+    @Getter
+    private String name, host, port, pass;
 
 }
 

@@ -38,7 +38,7 @@ public class BeanKit {
 
     public static <S, D> void copy(S s, D d){
         try {
-            BeanUtils.copyProperties(s, d);
+            BeanUtils.copyProperties(d, s);
         } catch (Exception e) {
             log.error("", e);
             throw new CustomException(e);

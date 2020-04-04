@@ -1,22 +1,24 @@
 package com.muyoucai.framework.storage;
 
+import java.util.List;
+
 /**
  * @author lzy
  */
 public interface Storage<T> {
 
     /**
-     * 获取数据
+     * 获取列表
      *
      * @return
      */
-    T get();
+    List<T> list();
 
     /**
      * 保存数据
      *
-     * @param data
+     * @param list
      */
-    void save(T data);
+    void save(List<T> list);
 
 }

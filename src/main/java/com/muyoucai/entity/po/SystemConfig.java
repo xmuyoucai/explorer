@@ -2,7 +2,9 @@ package com.muyoucai.entity.po;
 
 import com.muyoucai.framework.Settings;
 import com.muyoucai.framework.annotation.FileSettings;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -14,11 +16,12 @@ import lombok.Setter;
 @FileSettings(Settings.STATUS_FILENAME)
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class SystemConfig {
 
-    /**
-     * 存储是否初始化
-     */
-    private Boolean storageInitialized = false;
+    private String key;
+
+    private String value;
 
 }

@@ -2,16 +2,17 @@ package com.muyoucai.framework.storage;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.muyoucai.framework.Environment;
 import com.muyoucai.framework.ReflectKit;
 import com.muyoucai.framework.annotation.Autowired;
 import com.muyoucai.framework.annotation.GitFile;
 import com.muyoucai.util.FileKit;
-import com.muyoucai.util.GitUtils;
 import com.muyoucai.util.StreamKit;
 import com.muyoucai.util.ex.MissingGitFileAnnotationException;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.transport.CredentialsProvider;
+import java.util.List;
 
 /**
  * @Description
@@ -21,31 +22,30 @@ import org.eclipse.jgit.transport.CredentialsProvider;
  **/
 @Slf4j
 public abstract class GitStorage<T> implements Storage<T> {
-    // 认证凭证
+
+    public abstract Class<T> getEntityClass();
+
     @Autowired
     protected CredentialsProvider credentialsProvider;
 
     @Autowired
     protected Environment env;
 
-    public abstract Class<T> getEntityClass();
-
-    @Override
-    public T get() {
-        String gitDir = getGitDir();
+    public List<T> list(){
         // GitUtils.pull(gitDir, credentialsProvider);
         String filepath = getFullPath();
-        if(!FileKit.exists(filepath)){
-            save(ReflectKit.newInstance(getEntityClass()));
+        if(!FileKit.exists(filepath)) {
+            FileKit.safelyCreateFile(filepath);
+            StreamKit.write(JSON.toJSONString(Lists.newArrayList()), filepath);
         }
-        String json = StreamKit.read(filepath);
+        String json = StreamKit.read(getFullPath());
         log.debug("load data : {}", json);
-        return JSON.toJavaObject(JSON.parseObject(json), getEntityClass());
+        return JSON.parseArray(json, getEntityClass());
     }
 
     @Override
-    public void save(T data) {
-        String json = JSON.toJSONString(data);
+    public void save(List<T> list) {
+        String json = JSON.toJSONString(list);
         log.debug("persist data : {}", json);
         String filepath = getFullPath();
         if(!FileKit.exists(filepath)) {

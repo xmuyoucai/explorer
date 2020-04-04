@@ -2,10 +2,10 @@ package com.muyoucai.view.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
-import com.muyoucai.entity.po.RedisServer;
+import com.muyoucai.entity.po.RedisHost;
 import com.muyoucai.framework.ApplicationContext;
 import com.muyoucai.manager.RJedis;
-import com.muyoucai.service.RedisServerService;
+import com.muyoucai.service.RedisHostService;
 import com.muyoucai.util.CollectionKit;
 import com.muyoucai.view.FxUtils;
 import javafx.collections.FXCollections;
@@ -38,19 +38,19 @@ public class RedisController implements Initializable {
     @FXML
     private ComboBox serverBox;
 
-    private RedisServerService rsService;
+    private RedisHostService rsService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         log.info("Redis界面控制器初始化 ...");
-        this.rsService = ApplicationContext.getBean(RedisServerService.class);
+        this.rsService = ApplicationContext.getBean(RedisHostService.class);
         refreshServerList();
         initializeTV();
     }
 
     private void refreshServerList() {
         serverBox.getItems().clear();
-        List<RedisServer.Item> items = rsService.list();
+        List<RedisHost> items = rsService.list();
         if (!CollectionKit.isEmpty(items)) {
             serverBox.getItems().addAll(FXCollections.observableArrayList(items.stream().map(i -> i.getName()).collect(Collectors.toList())));
             serverBox.getSelectionModel().selectFirst();
@@ -125,7 +125,7 @@ public class RedisController implements Initializable {
         PasswordField passTF = FxUtils.newPF("Password", "");
         pane.getChildren().add(passTF);
 
-        Dialog<RedisServer.Item> dialog = new Dialog<>();
+        Dialog<RedisHost> dialog = new Dialog<>();
         dialog.setTitle("添加");
         dialog.setResizable(true);
         dialog.getDialogPane().setContent(pane);
@@ -161,16 +161,16 @@ public class RedisController implements Initializable {
                 if (!Strings.isNullOrEmpty(nameTF.getText())
                         && !Strings.isNullOrEmpty(hostTF.getText())
                         && !Strings.isNullOrEmpty(portTF.getText())) {
-                    return new RedisServer.Item(nameTF.getText(), hostTF.getText(), portTF.getText(), passTF.getText());
+                    return new RedisHost(nameTF.getText(), hostTF.getText(), portTF.getText(), passTF.getText());
                 }
             }
             return null;
         });
 
-        Optional<RedisServer.Item> result = dialog.showAndWait();
+        Optional<RedisHost> result = dialog.showAndWait();
         if (result.isPresent()) {
             log.info(JSON.toJSONString(result));
-            ApplicationContext.getBean(RedisServerService.class).saveOrUpdate(result.get());
+            ApplicationContext.getBean(RedisHostService.class).saveOrUpdate(result.get());
             refreshServerList();
             FxUtils.info("添加成功");
         }
@@ -224,7 +224,7 @@ public class RedisController implements Initializable {
     }
 
     private RJedis createJedis() {
-        RedisServer.Item item = rsService.get(serverBox.getSelectionModel().getSelectedItem().toString());
+        RedisHost item = rsService.get(serverBox.getSelectionModel().getSelectedItem().toString());
         return new RJedis(item.getHost(), Integer.parseInt(item.getPort()), item.getPass());
     }
 }
