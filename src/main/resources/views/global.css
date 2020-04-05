@@ -200,3 +200,7 @@
     -fx-background-position: center;
     -fx-background-size: 1300 700;
 }
+
+.remove-focus-frame {
+    -fx-focus-color: transparent;
+}

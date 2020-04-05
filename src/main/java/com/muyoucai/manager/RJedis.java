@@ -45,6 +45,7 @@ public class RJedis {
      * @return
      */
     public Set<String> keys(String pattern){
+        // jedis.count
         return jedis.keys(pattern);
     }
 
@@ -109,6 +110,7 @@ public class RJedis {
     }
 
     public String info(){
+        System.out.println(jedis.info("Server"));
         return jedis.info();
     }
 

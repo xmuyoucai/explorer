@@ -36,6 +36,9 @@ public class MenuController implements Initializable {
             if("首页".equals(text)){
                 FrontEntrance.switchTo(View.HOME);
             }
+            if("Settings".equals(text)){
+                FrontEntrance.switchTo(View.SETTINGS);
+            }
         }
     }
 }

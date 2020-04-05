@@ -16,6 +16,7 @@ public enum View {
     HOME("主界面", "/views/home.fxml"),
     REDIS("Redis界面", "/views/redis.fxml"),
     ZOOKEEPER("Zookeeper界面", "/views/zookeeper.fxml"),
+    SETTINGS("Settings界面", "/views/settings.fxml"),
     ;
 
     @Getter
