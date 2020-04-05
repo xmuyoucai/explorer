@@ -6,46 +6,67 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="base" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700" prefWidth="1300.0" style="-fx-effect: dropShadow(three-pass-box, black, 20.0,0, 0, 0);" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.muyoucai.view.controller.RedisController">
-   <center>
-      <VBox prefHeight="200.0" prefWidth="100.0" styleClass="box" BorderPane.alignment="CENTER">
-         <children>
-            <ToolBar prefHeight="117.0" prefWidth="1300.0">
-              <items>
-                  <TextField fx:id="patternTF" prefHeight="23.0" prefWidth="229.0" text="*" />
-                  <ComboBox fx:id="hostBox" prefHeight="23.0" prefWidth="229.0" />
-                <Button mnemonicParsing="false" onAction="#queryPattern" text="查询" />
-                  <Button mnemonicParsing="false" onAction="#showCreateRedisHostDialog" text="新增" />
-                  <Button mnemonicParsing="false" onAction="#deleteRedisServerItem" text="删除" />
-                  <Button mnemonicParsing="false" onAction="#showServerInfoDialog" text="服务器信息" />
-              </items>
-            </ToolBar>
-            <TabPane prefHeight="703.0" prefWidth="1300.0" tabClosingPolicy="UNAVAILABLE">
-              <tabs>
-                <Tab text="存储数据">
-                     <content>
-                          <VBox>
-                              <children>
-                                  <TableView fx:id="tv" prefHeight="760.0" prefWidth="1300.0">
-                </TableView>
-                              <ToolBar prefHeight="214.0" prefWidth="1300.0">
-                                <items>
-                                    <Label text="总数：" />
-                                    <Label text="193" />
-                                    <Label text="当前：" />
-                                    <Label text="20" />
-                                  <Button mnemonicParsing="false" text="向前翻页" />
-                                    <Button mnemonicParsing="false" text="向后翻页" />
-                                </items>
-                              </ToolBar>
-                              </children>
-                          </VBox>
-                     </content>
-                  </Tab>
-                <Tab text="服务器信息" />
-              </tabs>
-            </TabPane>
-         </children>
-      </VBox>
-   </center>
+<BorderPane fx:id="base" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity" prefHeight="700" prefWidth="1300.0"
+            style="-fx-effect: dropShadow(three-pass-box, black, 20.0,0, 0, 0);" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.muyoucai.view.controller.RedisController">
+    <center>
+        <VBox prefHeight="200.0" prefWidth="100.0" styleClass="box" BorderPane.alignment="CENTER">
+            <children>
+                <ToolBar prefHeight="117.0" prefWidth="1300.0">
+                    <items>
+                        <ComboBox fx:id="hostsBox" prefHeight="23.0" prefWidth="229.0"/>
+                        <Button mnemonicParsing="false" onAction="#showCreateRedisHostDialog" text="新增"/>
+                        <Button mnemonicParsing="false" onAction="#deleteRedisServerItem" text="移除"/>
+                    </items>
+                </ToolBar>
+                <TabPane prefHeight="703.0" prefWidth="1300.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                        <Tab text="存储数据">
+                            <content>
+                                <VBox>
+                                    <children>
+                                        <ToolBar prefHeight="40.0" prefWidth="200.0">
+                                            <items>
+                                                <TextField fx:id="patternTF" prefHeight="23.0" prefWidth="229.0"
+                                                           text="*"/>
+                                                <Button mnemonicParsing="false" onAction="#queryPattern" text="查询"/>
+                                            </items>
+                                        </ToolBar>
+                                        <TableView fx:id="tvDa" prefHeight="760.0" prefWidth="1300.0"/>
+                                        <ToolBar prefHeight="214.0" prefWidth="1300.0">
+                                            <items>
+                                                <Label text="总数："/>
+                                                <Label text="193"/>
+                                                <Label text="当前："/>
+                                                <Label text="20"/>
+                                                <Button mnemonicParsing="false" text="向前翻页"/>
+                                                <Button mnemonicParsing="false" text="向后翻页"/>
+                                            </items>
+                                        </ToolBar>
+                                    </children>
+                                </VBox>
+                            </content>
+                        </Tab>
+                        <Tab text="服务器信息">
+                            <content>
+                                <VBox prefHeight="200.0" prefWidth="100.0">
+                                    <children>
+                                        <ToolBar prefHeight="40.0" prefWidth="200.0">
+                                            <items>
+                                                <ComboBox fx:id="sectionsBox" prefWidth="150.0"/>
+                                                <Button mnemonicParsing="false" onAction="#refreshServerInfoList"
+                                                        text="刷新"/>
+                                            </items>
+                                        </ToolBar>
+                                        <TableView fx:id="tvSi" prefHeight="760.0" prefWidth="1300.0"/>
+                                    </children>
+                                </VBox>
+                            </content>
+                        </Tab>
+                    </tabs>
+                </TabPane>
+            </children>
+        </VBox>
+    </center>
 </BorderPane>

@@ -118,9 +118,29 @@
     -fx-text-fill: #fff;
 }
 
+/*黄色字体*/
+.font-yellow {
+    -fx-text-fill: #ffe615;
+}
+
+/*红色字体*/
+.font-red {
+    -fx-text-fill: #ff4e64;
+}
+
+/*蓝色色字体*/
+.font-blue {
+    -fx-text-fill: #3f7bff;
+}
+
+/*绿色色字体*/
+.font-green {
+    -fx-text-fill: rgba(9, 238, 24, 0.76);
+}
+
 /*灰色字体*/
 .font-gray {
-    -fx-text-fill: rgb(110, 110, 110);
+    -fx-text-fill: rgb(169, 184, 161);
 }
 
 /*标题字体*/

@@ -90,7 +90,7 @@ public class DialogForCreateRedisHost extends Dialog {
         if (result.isPresent()) {
             log.info(JSON.toJSONString(result));
             ApplicationContext.getBean(RedisHostService.class).saveOrUpdate(result.get());
-            controller.refreshHostList();
+            controller.refreshHostsList();
             FxUtils.info("添加成功");
         }
     }

@@ -42,24 +42,26 @@ public class RedisKeyTableCell extends TableCell<RJedis.RedisItem, RJedis.RedisI
         public RedisKeyItem(RJedis.RedisItem data) {
 
             setVgap(0);
-            setHgap(1);
+            setHgap(5);
             setPrefHeight(20);
             setPadding(new Insets(0));
 
-            getChildren().add(new Label(data.getKey()));
+            Label c1 = new Label(data.getType());
+            c1.getStyleClass().add("warm-theme");
+            getChildren().add(c1);
 
-            Button btn1 = new Button(data.getType());
-            // btn1.setStyle("-fx-background-color: linear-gradient(to right,#00fffc,#00fffc);-fx-background-radius: 5;-fx-border-radius: 5;-fx-padding: 0, 2, 0, 2;");
-            getChildren().add(btn1);
+            String ttl = data.getTtl() + " ms";
+            if(data.getTtl() == -1L){
+                ttl = "∞";
+            }
+            Label c2 = new Label(ttl);
+            c2.getStyleClass().add("warm-theme");
+            getChildren().add(c2);
 
-            Button btn2 = new Button(data.getTtl() + "ms");
-            btn2.setStyle("-fx-background-color: linear-gradient(to right,#00fffc,#fff600);-fx-background-radius: 5;-fx-border-radius: 5;-fx-padding: 0, 5, 0, 5;");
-            getChildren().add(btn2);
 
-
-            Label btn3 = new Label(data.getCount() + "items");
-            btn3.getStyleClass().add("font-white");
-            getChildren().add(btn3);
+            Label c3 = new Label(data.getCount() + " items");
+            c3.getStyleClass().add("warm-theme");
+            getChildren().add(c3);
 
         }
     }

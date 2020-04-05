@@ -9,9 +9,8 @@ import com.muyoucai.util.CollectionKit;
 import com.muyoucai.view.FxUtils;
 import com.muyoucai.view.custom.RedisKeyTableCell;
 import com.muyoucai.view.dialogs.DialogForCreateRedisHost;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventType;
@@ -21,7 +20,6 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.util.Callback;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URL;
@@ -33,11 +31,15 @@ import java.util.stream.Collectors;
 public class RedisController implements Initializable {
 
     @FXML
-    private TableView<RJedis.RedisItem> tv;
+    private TableView<RJedis.RedisItem> tvDa;
+    @FXML
+    private TableView<RJedis.RedisServerInfoItem> tvSi;
     @FXML
     private TextField patternTF;
     @FXML
-    private ComboBox hostBox;
+    private ComboBox<String> hostsBox;
+    @FXML
+    private ComboBox<String> sectionsBox;
 
     private RedisHostService rsService;
 
@@ -45,16 +47,36 @@ public class RedisController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         log.debug("Redis界面控制器初始化 ...");
         this.rsService = ApplicationContext.getBean(RedisHostService.class);
-        this.refreshHostList();
-        this.initializeTV();
+        this.refreshHostsList();
+        this.initSectionsList();
+        this.refreshRedisServerInfoList();
+        this.initializeTVD();
+        this.initializeTVS();
     }
 
-    public void refreshHostList() {
-        hostBox.getItems().clear();
+    public void refreshHostsList() {
+        hostsBox.getItems().clear();
         List<RedisHost> items = rsService.list();
         if (!CollectionKit.isEmpty(items)) {
-            hostBox.getItems().addAll(FXCollections.observableArrayList(items.stream().map(i -> i.getName()).collect(Collectors.toList())));
-            hostBox.getSelectionModel().selectFirst();
+            hostsBox.getItems().addAll(FXCollections.observableArrayList(items.stream().map(i -> i.getName()).collect(Collectors.toList())));
+            hostsBox.getSelectionModel().selectFirst();
+        }
+    }
+
+    public void initSectionsList() {
+        sectionsBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> refreshRedisServerInfoList());
+        this.refreshSectionsList();
+    }
+
+    public void refreshSectionsList() {
+        sectionsBox.getItems().clear();
+        RJedis rJedis = createJedis();
+        List<RJedis.RedisServerInfoItem> items = rJedis.info2();
+        if (!CollectionKit.isEmpty(items)) {
+            sectionsBox.getItems().addAll(FXCollections.observableArrayList(items.stream().map(i -> i.getSection()).distinct().collect(Collectors.toList())));
+            if (sectionsBox.getSelectionModel().isEmpty()) {
+                sectionsBox.getSelectionModel().selectFirst();
+            }
         }
     }
 
@@ -69,9 +91,22 @@ public class RedisController implements Initializable {
             FxUtils.error("请输入匹配字符串");
             return;
         }
-        if (hostBox.getSelectionModel().getSelectedItem() != null) {
+        refreshRedisDataList(pattern);
+    }
+
+    private void refreshRedisDataList(String pattern) {
+        if (hostsBox.getSelectionModel().getSelectedItem() != null) {
             RJedis rJedis = createJedis();
-            tv.setItems(FXCollections.observableArrayList(rJedis.values(pattern)));
+            tvDa.setItems(FXCollections.observableArrayList(rJedis.values(pattern)));
+        }
+    }
+
+    private void refreshRedisServerInfoList() {
+        String section = sectionsBox.getSelectionModel().getSelectedItem();
+        if (section != null) {
+            RJedis rJedis = createJedis();
+            List<RJedis.RedisServerInfoItem> items = rJedis.info2();
+            tvSi.setItems(FXCollections.observableArrayList(items.stream().filter(i -> i.getSection().equals(section)).collect(Collectors.toList())));
         }
     }
 
@@ -81,7 +116,7 @@ public class RedisController implements Initializable {
      * @param event
      */
     public void showServerInfoDialog(ActionEvent event) {
-        if (hostBox.getSelectionModel().getSelectedItem() != null) {
+        if (hostsBox.getSelectionModel().getSelectedItem() != null) {
             RJedis rJedis = createJedis();
             Dialog dialog = new Dialog();
             TextArea ta = new TextArea(rJedis.info());
@@ -100,10 +135,10 @@ public class RedisController implements Initializable {
      * @param event
      */
     public void deleteRedisServerItem(ActionEvent event) {
-        if (hostBox.getSelectionModel().getSelectedItem() != null) {
-            rsService.del(hostBox.getSelectionModel().getSelectedItem().toString());
+        if (hostsBox.getSelectionModel().getSelectedItem() != null) {
+            rsService.del(hostsBox.getSelectionModel().getSelectedItem().toString());
         }
-        refreshHostList();
+        refreshHostsList();
         FxUtils.info("删除成功");
     }
 
@@ -116,34 +151,42 @@ public class RedisController implements Initializable {
         new DialogForCreateRedisHost(this);
     }
 
-    private void initializeTV() {
-        tv.getColumns().add(createTVColumnForKey());
-        tv.getColumns().add(createTVColumn("Value", "value", 900));
+    private void initializeTVD() {
+        tvDa.getColumns().add(createTVColumn("KEY", "key", 250));
+        tvDa.getColumns().add(createTVColumn("TYPE", "type", 100));
+        tvDa.getColumns().add(createTVColumn("TTL", "ttl", 100));
+        tvDa.getColumns().add(createTVColumn("ITEMS", "count", 100));
+        tvDa.getColumns().add(createTVColumn("VALUE", "value", 700));
     }
 
-    private TableColumn<RJedis.RedisItem, RJedis.RedisItem> createTVColumnForKey() {
-        TableColumn<RJedis.RedisItem, RJedis.RedisItem> column = new TableColumn<>("Key");
-        column.setPrefWidth(250);
+    private void initializeTVS() {
+        tvSi.getColumns().add(createTVSColumnForSection());
+        tvSi.getColumns().add(createTVSColumnForKey());
+        tvSi.getColumns().add(createTVSColumnForValue());
+    }
+
+    private TableColumn<RJedis.RedisServerInfoItem, String> createTVSColumnForSection() {
+        TableColumn<RJedis.RedisServerInfoItem, String> column = new TableColumn<>("Section");
+        column.setPrefWidth(150);
         column.setSortable(true);
-        column.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue()));
-        column.setCellFactory(col -> new RedisKeyTableCell());
+        column.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getSection()));
         return column;
     }
 
-    private void createContextMenuForKey(TextFieldTableCell<RJedis.RedisItem, String> cell) {
-        ContextMenu cm = new ContextMenu();
-        MenuItem miFz = new MenuItem("Copy Key");
-        miFz.addEventHandler(EventType.ROOT, e -> {
-            RJedis.RedisItem data = tv.getSelectionModel().getSelectedItem();
-            FxUtils.clipboard(data.getKey());
-        });
-        MenuItem miCk = new MenuItem("Show Detail");
-        miCk.addEventHandler(EventType.ROOT, e -> {
-            RJedis.RedisItem data = tv.getSelectionModel().getSelectedItem();
-            FxUtils.info(data.getKey());
-        });
-        cm.getItems().addAll(miFz, miCk);
-        cell.setContextMenu(cm);
+    private TableColumn<RJedis.RedisServerInfoItem, String> createTVSColumnForKey() {
+        TableColumn<RJedis.RedisServerInfoItem, String> column = new TableColumn<>("Key");
+        column.setPrefWidth(250);
+        column.setSortable(true);
+        column.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getKey()));
+        return column;
+    }
+
+    private TableColumn<RJedis.RedisServerInfoItem, String> createTVSColumnForValue() {
+        TableColumn<RJedis.RedisServerInfoItem, String> column = new TableColumn<>("Value");
+        column.setPrefWidth(880);
+        column.setSortable(true);
+        column.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getValue()));
+        return column;
     }
 
     private TableColumn<RJedis.RedisItem, String> createTVColumn(String head, String field, int width) {
@@ -164,20 +207,24 @@ public class RedisController implements Initializable {
         ContextMenu cm = new ContextMenu();
         MenuItem miFz = new MenuItem("复制");
         miFz.addEventHandler(EventType.ROOT, e -> {
-            RJedis.RedisItem data = tv.getSelectionModel().getSelectedItem();
-            FxUtils.clipboard(data.gi(index).toString());
+            RJedis.RedisItem data = tvDa.getSelectionModel().getSelectedItem();
+            // FxUtils.clipboard(data.gi(index).toString());
         });
         MenuItem miCk = new MenuItem("查看");
         miCk.addEventHandler(EventType.ROOT, e -> {
-            RJedis.RedisItem data = tv.getSelectionModel().getSelectedItem();
-            FxUtils.info(data.gi(index).toString());
+            RJedis.RedisItem data = tvDa.getSelectionModel().getSelectedItem();
+            // FxUtils.info(data.gi(index).toString());
         });
         cm.getItems().addAll(miFz, miCk);
         cell.setContextMenu(cm);
     }
 
     private RJedis createJedis() {
-        RedisHost item = rsService.get(hostBox.getSelectionModel().getSelectedItem().toString());
+        RedisHost item = rsService.get(hostsBox.getSelectionModel().getSelectedItem().toString());
         return new RJedis(item.getHost(), Integer.parseInt(item.getPort()), item.getPass());
+    }
+
+    public void refreshServerInfoList(ActionEvent event) {
+        this.refreshRedisServerInfoList();
     }
 }
