@@ -54,7 +54,9 @@ public class FrontEntrance extends Application {
         switchTo(View.HOME);
 
         log.info("初始化场景 ...");
-        primaryStage.setScene(new Scene(root, Settings.WIDTH, Settings.HEIGHT));
+        Scene scene = new Scene(root, Settings.WIDTH, Settings.HEIGHT);
+        scene.getStylesheets().add("views/global.css");
+        primaryStage.setScene(scene);
 
         primaryStage.setTitle(Settings.TITLE);
         primaryStage.setResizable(false);

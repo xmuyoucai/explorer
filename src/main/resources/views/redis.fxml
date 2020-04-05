@@ -8,23 +8,21 @@
 
 <BorderPane fx:id="base" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700" prefWidth="1300.0" style="-fx-effect: dropShadow(three-pass-box, black, 20.0,0, 0, 0);" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.muyoucai.view.controller.RedisController">
     <center>
-        <HBox prefWidth="800.0" BorderPane.alignment="TOP_LEFT">
+        <VBox BorderPane.alignment="TOP_LEFT" styleClass="box">
             <children>
-                <TableView fx:id="tv" prefWidth="1300.0">
+                <TableView fx:id="tv" prefHeight="661.0" prefWidth="1300.0">
                 </TableView>
+            <ToolBar prefHeight="40.0" prefWidth="200.0">
+              <items>
+                  <TextField fx:id="patternTF" prefHeight="23.0" prefWidth="229.0" text="*" />
+                  <ComboBox fx:id="hostBox" prefHeight="23.0" prefWidth="229.0" />
+                <Button mnemonicParsing="false" onAction="#queryPattern" text="查询" />
+                  <Button mnemonicParsing="false" onAction="#showCreateRedisHostDialog" text="新增" />
+                  <Button mnemonicParsing="false" onAction="#deleteRedisServerItem" text="删除" />
+                  <Button mnemonicParsing="false" onAction="#showServerInfoDialog" text="服务器信息" />
+              </items>
+            </ToolBar>
             </children>
-        </HBox>
+        </VBox>
     </center>
-   <top>
-      <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-        <items>
-            <TextField fx:id="patternTF" prefHeight="23.0" prefWidth="229.0" text="*" />
-            <ComboBox fx:id="serverBox" prefHeight="23.0" prefWidth="175.0" />
-          <Button mnemonicParsing="false" onAction="#query" text="查询" />
-            <Button mnemonicParsing="false" onAction="#showAddRedisServerItemDialog" text="新增" />
-            <Button mnemonicParsing="false" onAction="#deleteRedisServerItem" text="删除" />
-            <Button mnemonicParsing="false" onAction="#showServerInfoDialog" text="服务器信息" />
-        </items>
-      </ToolBar>
-   </top>
 </BorderPane>
