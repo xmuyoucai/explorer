@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
+import redis.clients.jedis.params.SetParams;
 
 import java.util.List;
 import java.util.Set;
@@ -149,6 +150,7 @@ public class RJedis {
 
     public String set(String key, String value) {
         try (Jedis jedis = newJedisAndConnectAndAuth()) {
+            SetParams sp = new SetParams();
             return jedis.set(key, value);
         }
     }

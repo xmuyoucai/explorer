@@ -16,8 +16,8 @@
                 <ToolBar prefHeight="117.0" prefWidth="1300.0">
                     <items>
                         <ComboBox fx:id="hostsBox" prefHeight="23.0" prefWidth="229.0"/>
-                        <Button mnemonicParsing="false" onAction="#showCreateRedisHostDialog" text="新增"/>
-                        <Button mnemonicParsing="false" onAction="#deleteRedisServerItem" text="移除"/>
+                        <Button mnemonicParsing="false" onAction="#actionShowCreateRedisHostDialog" text="新增"/>
+                        <Button mnemonicParsing="false" onAction="#actionDeleteRedisServerItem" text="移除"/>
                     </items>
                 </ToolBar>
                 <TabPane prefHeight="703.0" prefWidth="1300.0" tabClosingPolicy="UNAVAILABLE">
@@ -30,7 +30,7 @@
                                             <items>
                                                 <TextField fx:id="patternTF" prefHeight="23.0" prefWidth="229.0"
                                                            text="*"/>
-                                                <Button mnemonicParsing="false" onAction="#queryPattern" text="查询"/>
+                                                <Button mnemonicParsing="false" onAction="#actionQueryPattern" text="查询"/>
                                             </items>
                                         </ToolBar>
                                         <TableView fx:id="tvDa" prefHeight="523.0" prefWidth="1300.0"/>
@@ -46,7 +46,7 @@
                                                                           prefWidth="74.0"/>
                                                                 <Label fx:id="lblGrammar" prefHeight="22.0"
                                                                        prefWidth="321.0" text="[123]"/>
-                                                                <Button mnemonicParsing="false" onAction="#execute"
+                                                                <Button mnemonicParsing="false" onAction="#actionExecute"
                                                                         prefHeight="23.0" prefWidth="53.0" text="执行"/>
                                                             </children>
                                                             <padding>
@@ -68,13 +68,13 @@
                                                 <VBox prefHeight="96.0" prefWidth="782.0"
                                                       style="-fx-border-color: gray;">
                                                     <children>
-                                                        <TextArea fx:id="logTA" prefHeight="90.0" prefWidth="799.0"/>
+                                                        <TextArea fx:id="logTA" editable="false" prefHeight="90.0" prefWidth="799.0"/>
                                                     </children>
                                                     <padding>
                                                         <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
                                                     </padding>
                                                 </VBox>
-                                                <Button mnemonicParsing="false" onAction="#clearLog" text="清除日志"/>
+                                                <Button mnemonicParsing="false" onAction="#actionClearLog" text="清除日志"/>
                                             </items>
                                         </ToolBar>
                                     </children>
@@ -88,7 +88,7 @@
                                         <ToolBar prefHeight="40.0" prefWidth="200.0">
                                             <items>
                                                 <ComboBox fx:id="sectionsBox" prefWidth="150.0"/>
-                                                <Button mnemonicParsing="false" onAction="#refreshServerInfoList"
+                                                <Button mnemonicParsing="false" onAction="#actionRefreshServerInfoList"
                                                         text="刷新"/>
                                             </items>
                                         </ToolBar>

@@ -65,13 +65,18 @@ public class RedisController implements Initializable {
         this.initializeTVS();
     }
 
-    public void refreshHostsList() {
-        hostsBox.getItems().clear();
-        List<RedisHost> items = rsService.list();
-        if (!CollectionKit.isEmpty(items)) {
-            hostsBox.getItems().addAll(FXCollections.observableArrayList(items.stream().map(i -> i.getName()).collect(Collectors.toList())));
-            hostsBox.getSelectionModel().selectFirst();
-        }
+    private void initializeTVD() {
+        tvDa.getColumns().add(createTVColumn("KEY", "key", 250));
+        tvDa.getColumns().add(createTVColumn("TYPE", "type", 100));
+        tvDa.getColumns().add(createTVColumn("TTL", "ttl", 100));
+        tvDa.getColumns().add(createTVColumn("ITEMS", "count", 100));
+        tvDa.getColumns().add(createTVColumn("VALUE", "value", 700));
+    }
+
+    private void initializeTVS() {
+        tvSi.getColumns().add(createTVSColumnForSection());
+        tvSi.getColumns().add(createTVSColumnForKey());
+        tvSi.getColumns().add(createTVSColumnForValue());
     }
 
     public void initOperationsList() {
@@ -86,6 +91,15 @@ public class RedisController implements Initializable {
         this.refreshSectionsList();
     }
 
+    public void refreshHostsList() {
+        hostsBox.getItems().clear();
+        List<RedisHost> items = rsService.list();
+        if (!CollectionKit.isEmpty(items)) {
+            hostsBox.getItems().addAll(FXCollections.observableArrayList(items.stream().map(i -> i.getName()).collect(Collectors.toList())));
+            hostsBox.getSelectionModel().selectFirst();
+        }
+    }
+
     public void refreshSectionsList() {
         sectionsBox.getItems().clear();
         RJedis rJedis = createJedis();
@@ -96,20 +110,6 @@ public class RedisController implements Initializable {
                 sectionsBox.getSelectionModel().selectFirst();
             }
         }
-    }
-
-    /**
-     * 查询事件
-     *
-     * @param event
-     */
-    public void queryPattern(ActionEvent event) {
-        String pattern = patternTF.getText().trim();
-        if (Strings.isNullOrEmpty(pattern)) {
-            FxUtils.error("请输入匹配字符串");
-            return;
-        }
-        refreshRedisDataList(pattern);
     }
 
     private void refreshRedisDataList(String pattern) {
@@ -133,61 +133,6 @@ public class RedisController implements Initializable {
         if (opt != null) {
             lblGrammar.setText(RJedis.RedisOperation.retrieval(opt).getGrammar());
         }
-    }
-
-    /**
-     * 查看服务器信息事件
-     *
-     * @param event
-     */
-    public void showServerInfoDialog(ActionEvent event) {
-        if (hostsBox.getSelectionModel().getSelectedItem() != null) {
-            RJedis rJedis = createJedis();
-            Dialog dialog = new Dialog();
-            TextArea ta = new TextArea(rJedis.info());
-            ta.setEditable(false);
-            ta.setPadding(new Insets(3, 3, 3, 3));
-            dialog.getDialogPane().setContent(ta);
-            ButtonType btnOk = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
-            dialog.getDialogPane().getButtonTypes().add(btnOk);
-            dialog.show();
-        }
-    }
-
-    /**
-     * 删除服务器事件
-     *
-     * @param event
-     */
-    public void deleteRedisServerItem(ActionEvent event) {
-        if (hostsBox.getSelectionModel().getSelectedItem() != null) {
-            rsService.del(hostsBox.getSelectionModel().getSelectedItem().toString());
-        }
-        refreshHostsList();
-        FxUtils.info("删除成功");
-    }
-
-    /**
-     * 添加事件
-     *
-     * @param event
-     */
-    public void showCreateRedisHostDialog(ActionEvent event) {
-        new DialogForCreateRedisHost(this);
-    }
-
-    private void initializeTVD() {
-        tvDa.getColumns().add(createTVColumn("KEY", "key", 250));
-        tvDa.getColumns().add(createTVColumn("TYPE", "type", 100));
-        tvDa.getColumns().add(createTVColumn("TTL", "ttl", 100));
-        tvDa.getColumns().add(createTVColumn("ITEMS", "count", 100));
-        tvDa.getColumns().add(createTVColumn("VALUE", "value", 700));
-    }
-
-    private void initializeTVS() {
-        tvSi.getColumns().add(createTVSColumnForSection());
-        tvSi.getColumns().add(createTVSColumnForKey());
-        tvSi.getColumns().add(createTVSColumnForValue());
     }
 
     private TableColumn<RJedis.RedisServerInfoItem, String> createTVSColumnForSection() {
@@ -249,11 +194,51 @@ public class RedisController implements Initializable {
         return new RJedis(item.getHost(), Integer.parseInt(item.getPort()), item.getPass());
     }
 
-    public void refreshServerInfoList(ActionEvent event) {
+    private void log(String msg) {
+        logTA.appendText(String.format("[%s] %s", DateUtils.formatCurrentDate(), msg));
+    }
+
+    /**
+     * 查询事件
+     *
+     * @param event
+     */
+    public void actionQueryPattern(ActionEvent event) {
+        String pattern = patternTF.getText().trim();
+        if (Strings.isNullOrEmpty(pattern)) {
+            FxUtils.error("请输入匹配字符串");
+            return;
+        }
+        refreshRedisDataList(pattern);
+    }
+
+    /**
+     * 删除服务器事件
+     *
+     * @param event
+     */
+    public void actionDeleteRedisServerItem(ActionEvent event) {
+        if (hostsBox.getSelectionModel().getSelectedItem() != null) {
+            rsService.del(hostsBox.getSelectionModel().getSelectedItem().toString());
+        }
+        refreshHostsList();
+        FxUtils.info("删除成功");
+    }
+
+    /**
+     * 添加事件
+     *
+     * @param event
+     */
+    public void actionShowCreateRedisHostDialog(ActionEvent event) {
+        new DialogForCreateRedisHost(this);
+    }
+
+    public void actionRefreshServerInfoList(ActionEvent event) {
         this.refreshRedisServerInfoList();
     }
 
-    public void execute(ActionEvent event) {
+    public void actionExecute(ActionEvent event) {
 
         String params = tfParams.getText().trim();
         if(Strings.isNullOrEmpty(params)){
@@ -264,9 +249,12 @@ public class RedisController implements Initializable {
         String opt = operationsBox.getSelectionModel().getSelectedItem();
         if(RJedis.RedisOperation.set.name().equals(opt)){
             String[] paramArr = params.split("\\s+");
-            if(paramArr.length != 2){
+            if(paramArr.length < 2 || paramArr.length > 5){
                 log(String.format("参数错误：%s\n", params));
                 return;
+            }
+            if(paramArr.length == 2){
+
             }
             log(String.format("执行语句：[ set %s %s ]，执行结果：%s\n", paramArr[0], paramArr[1], createJedis().set(paramArr[0], paramArr[1])));
             return;
@@ -274,11 +262,7 @@ public class RedisController implements Initializable {
 
     }
 
-    private void log(String msg) {
-        logTA.appendText(String.format("[%s] %s", DateUtils.formatCurrentDate(), msg));
-    }
-
-    public void clearLog(ActionEvent event) {
+    public void actionClearLog(ActionEvent event) {
         logTA.setText("");
     }
 }
