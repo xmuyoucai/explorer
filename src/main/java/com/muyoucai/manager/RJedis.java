@@ -6,6 +6,7 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.muyoucai.util.ex.CustomException;
 import com.muyoucai.view.FxUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -47,7 +48,7 @@ public class RJedis {
     public Set<String> keys(String pattern, Jedis jedis) {
         Set<String> keys = Sets.newHashSet();
         ScanParams sp = new ScanParams();
-        sp.count(50);
+        sp.count(10);
         sp.match(pattern);
         ScanResult sr;
         String cursor = ScanParams.SCAN_POINTER_START;
@@ -146,6 +147,12 @@ public class RJedis {
         }
     }
 
+    public String set(String key, String value) {
+        try (Jedis jedis = newJedisAndConnectAndAuth()) {
+            return jedis.set(key, value);
+        }
+    }
+
     public static void main(String[] args) {
         // System.out.println(JSON.toJSONString(new RJedis("120.78.200.102", 6379, "").info2(), SerializerFeature.PrettyFormat));
         RJedis rJedis = new RJedis("120.78.200.102", 6379, "");
@@ -174,8 +181,29 @@ public class RJedis {
         }
     }
 
+    @AllArgsConstructor
     public enum RedisDataType {
-        string, hash, list, set, zset
+        string, hash, list, set, zset;
+    }
+
+    @AllArgsConstructor
+    public enum RedisOperation {
+        set("key value [expiration EX seconds|PX milliseconds] [NX|XX]"),
+        hset("key field value"),
+        lset("key index value"),
+        zadd("key [NX|XX] [CH] [INCR] score member [score member ...]");
+
+        @Getter
+        private String grammar;
+
+        public static RedisOperation retrieval(String opt) {
+            for (RedisOperation operation : values()) {
+                if (operation.name().equals(opt)) {
+                    return operation;
+                }
+            }
+            throw new CustomException("Operation not supported");
+        }
     }
 
     @Getter

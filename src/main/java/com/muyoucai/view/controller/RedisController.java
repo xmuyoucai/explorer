@@ -6,6 +6,7 @@ import com.muyoucai.framework.ApplicationContext;
 import com.muyoucai.manager.RJedis;
 import com.muyoucai.service.RedisHostService;
 import com.muyoucai.util.CollectionKit;
+import com.muyoucai.util.DateUtils;
 import com.muyoucai.view.FxUtils;
 import com.muyoucai.view.custom.RedisKeyTableCell;
 import com.muyoucai.view.dialogs.DialogForCreateRedisHost;
@@ -23,6 +24,7 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -30,6 +32,14 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RedisController implements Initializable {
 
+    @FXML
+    public ComboBox<String> operationsBox;
+    @FXML
+    public Label lblGrammar;
+    @FXML
+    public TextArea tfParams;
+    @FXML
+    public TextArea logTA;
     @FXML
     private TableView<RJedis.RedisItem> tvDa;
     @FXML
@@ -49,6 +59,7 @@ public class RedisController implements Initializable {
         this.rsService = ApplicationContext.getBean(RedisHostService.class);
         this.refreshHostsList();
         this.initSectionsList();
+        this.initOperationsList();
         this.refreshRedisServerInfoList();
         this.initializeTVD();
         this.initializeTVS();
@@ -61,6 +72,13 @@ public class RedisController implements Initializable {
             hostsBox.getItems().addAll(FXCollections.observableArrayList(items.stream().map(i -> i.getName()).collect(Collectors.toList())));
             hostsBox.getSelectionModel().selectFirst();
         }
+    }
+
+    public void initOperationsList() {
+        List<String> operations = Arrays.asList(RJedis.RedisOperation.values()).stream().map(i -> i.name()).collect(Collectors.toList());
+        operationsBox.getItems().addAll(FXCollections.observableArrayList(operations));
+        operationsBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> refreshGrammarLabel());
+        operationsBox.getSelectionModel().selectFirst();
     }
 
     public void initSectionsList() {
@@ -107,6 +125,13 @@ public class RedisController implements Initializable {
             RJedis rJedis = createJedis();
             List<RJedis.RedisServerInfoItem> items = rJedis.info2();
             tvSi.setItems(FXCollections.observableArrayList(items.stream().filter(i -> i.getSection().equals(section)).collect(Collectors.toList())));
+        }
+    }
+
+    private void refreshGrammarLabel() {
+        String opt = operationsBox.getSelectionModel().getSelectedItem();
+        if (opt != null) {
+            lblGrammar.setText(RJedis.RedisOperation.retrieval(opt).getGrammar());
         }
     }
 
@@ -226,5 +251,34 @@ public class RedisController implements Initializable {
 
     public void refreshServerInfoList(ActionEvent event) {
         this.refreshRedisServerInfoList();
+    }
+
+    public void execute(ActionEvent event) {
+
+        String params = tfParams.getText().trim();
+        if(Strings.isNullOrEmpty(params)){
+            log("请求输入执行参数\n");
+            return;
+        }
+
+        String opt = operationsBox.getSelectionModel().getSelectedItem();
+        if(RJedis.RedisOperation.set.name().equals(opt)){
+            String[] paramArr = params.split("\\s+");
+            if(paramArr.length != 2){
+                log(String.format("参数错误：%s\n", params));
+                return;
+            }
+            log(String.format("执行语句：[ set %s %s ]，执行结果：%s\n", paramArr[0], paramArr[1], createJedis().set(paramArr[0], paramArr[1])));
+            return;
+        }
+
+    }
+
+    private void log(String msg) {
+        logTA.appendText(String.format("[%s] %s", DateUtils.formatCurrentDate(), msg));
+    }
+
+    public void clearLog(ActionEvent event) {
+        logTA.setText("");
     }
 }

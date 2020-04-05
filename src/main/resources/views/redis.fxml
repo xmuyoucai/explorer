@@ -33,22 +33,55 @@
                                                 <Button mnemonicParsing="false" onAction="#queryPattern" text="查询"/>
                                             </items>
                                         </ToolBar>
-                                        <TableView fx:id="tvDa" prefHeight="760.0" prefWidth="1300.0"/>
-                                        <ToolBar prefHeight="214.0" prefWidth="1300.0">
+                                        <TableView fx:id="tvDa" prefHeight="523.0" prefWidth="1300.0"/>
+                                        <ToolBar prefHeight="40.0" prefWidth="200.0" VBox.vgrow="NEVER">
                                             <items>
-                                                <Label text="总数："/>
-                                                <Label text="193"/>
-                                                <Label text="当前："/>
-                                                <Label text="20"/>
-                                                <Button mnemonicParsing="false" text="向前翻页"/>
-                                                <Button mnemonicParsing="false" text="向后翻页"/>
+                                                <VBox prefHeight="79.0" prefWidth="470.0"
+                                                      style="-fx-border-color: gray;">
+                                                    <children>
+                                                        <FlowPane alignment="CENTER_LEFT" hgap="5.0" prefHeight="41.0"
+                                                                  prefWidth="466.0">
+                                                            <children>
+                                                                <ComboBox fx:id="operationsBox" prefHeight="23.0"
+                                                                          prefWidth="74.0"/>
+                                                                <Label fx:id="lblGrammar" prefHeight="22.0"
+                                                                       prefWidth="321.0" text="[123]"/>
+                                                                <Button mnemonicParsing="false" onAction="#execute"
+                                                                        prefHeight="23.0" prefWidth="53.0" text="执行"/>
+                                                            </children>
+                                                            <padding>
+                                                                <Insets left="5.0"/>
+                                                            </padding>
+                                                        </FlowPane>
+                                                        <FlowPane alignment="CENTER_LEFT" hgap="5.0" prefHeight="34.0"
+                                                                  prefWidth="935.0">
+                                                            <children>
+                                                                <TextArea fx:id="tfParams" prefHeight="45.0"
+                                                                          prefWidth="459.0"/>
+                                                            </children>
+                                                            <padding>
+                                                                <Insets left="5.0"/>
+                                                            </padding>
+                                                        </FlowPane>
+                                                    </children>
+                                                </VBox>
+                                                <VBox prefHeight="96.0" prefWidth="782.0"
+                                                      style="-fx-border-color: gray;">
+                                                    <children>
+                                                        <TextArea fx:id="logTA" prefHeight="90.0" prefWidth="799.0"/>
+                                                    </children>
+                                                    <padding>
+                                                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                                                    </padding>
+                                                </VBox>
+                                                <Button mnemonicParsing="false" onAction="#clearLog" text="清除日志"/>
                                             </items>
                                         </ToolBar>
                                     </children>
                                 </VBox>
                             </content>
                         </Tab>
-                        <Tab text="服务器信息">
+                        <Tab fx:id="tabRedisServerInfo" text="服务器信息">
                             <content>
                                 <VBox prefHeight="200.0" prefWidth="100.0">
                                     <children>
