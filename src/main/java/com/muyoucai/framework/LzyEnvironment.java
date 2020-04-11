@@ -1,7 +1,7 @@
 package com.muyoucai.framework;
 
 import com.google.common.collect.Maps;
-import com.muyoucai.framework.annotation.Component;
+import com.muyoucai.framework.annotation.LzyComponent;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,12 +18,12 @@ import java.util.Properties;
  **/
 @Slf4j
 @Getter
-@Component
-public class Environment {
+@LzyComponent
+public class LzyEnvironment {
 
     private Map<Object, Object> cfg;
 
-    public Environment() {
+    public LzyEnvironment() {
         Properties properties = new Properties();
         try (InputStream in = Settings.class.getClassLoader().getResourceAsStream("config.properties")) {
             properties.load(in);

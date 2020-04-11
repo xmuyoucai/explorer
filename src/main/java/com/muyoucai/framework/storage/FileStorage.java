@@ -2,7 +2,7 @@ package com.muyoucai.framework.storage;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
-import com.muyoucai.framework.Environment;
+import com.muyoucai.framework.LzyEnvironment;
 import com.muyoucai.framework.annotation.Autowired;
 import com.muyoucai.framework.annotation.FileSettings;
 import com.muyoucai.util.FileKit;
@@ -23,7 +23,7 @@ public abstract class FileStorage<T> implements Storage<T> {
     public abstract Class<T> getEntityClass();
 
     @Autowired
-    private Environment env;
+    private LzyEnvironment env;
 
     @Override
     public List<T> list() {

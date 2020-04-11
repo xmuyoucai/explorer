@@ -4,12 +4,12 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.muyoucai.framework.annotation.LzyBean;
+import com.muyoucai.framework.annotation.LzyConfiguration;
 import com.muyoucai.util.CollectionKit;
 import com.muyoucai.util.ex.*;
 import com.muyoucai.framework.annotation.Autowired;
-import com.muyoucai.framework.annotation.Bean;
-import com.muyoucai.framework.annotation.Component;
-import com.muyoucai.framework.annotation.Configuration;
+import com.muyoucai.framework.annotation.LzyComponent;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -146,17 +146,17 @@ public class BeanFactory {
             Set<Method> methods = ReflectKit.getAllMethods(clz);
             if(!CollectionKit.isEmpty(methods)){
                 for (Method method : methods) {
-                    if(!ReflectKit.has(Bean.class, method)) {
+                    if(!ReflectKit.has(LzyBean.class, method)) {
                         continue;
                     }
-                    Bean b = method.getAnnotation(Bean.class);
+                    LzyBean b = method.getAnnotation(LzyBean.class);
                     BeanDefinition def = new BeanDefinition(b.name(), method.getReturnType(), clz, method, null);
                     addDefinition(b.name(), method.getReturnType(), def);
                 }
             }
         }
         for (Class<?> clz : componentSet) {
-            Component c = clz.getAnnotation(Component.class);
+            LzyComponent c = clz.getAnnotation(LzyComponent.class);
             BeanDefinition def = new BeanDefinition(c.name(), clz, null, null, null);
             addDefinition(c.name(), clz, def);
         }
@@ -186,9 +186,9 @@ public class BeanFactory {
 
     private void classify() {
         for (Class<?> clz : all) {
-            if(ReflectKit.has(Configuration.class, clz))
+            if(ReflectKit.has(LzyConfiguration.class, clz))
                 configurationSet.add(clz);
-            if(ReflectKit.has(Component.class, clz))
+            if(ReflectKit.has(LzyComponent.class, clz))
                 componentSet.add(clz);
         }
     }

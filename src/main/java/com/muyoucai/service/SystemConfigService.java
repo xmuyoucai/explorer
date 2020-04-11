@@ -3,10 +3,10 @@ package com.muyoucai.service;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.muyoucai.entity.po.SystemConfig;
-import com.muyoucai.framework.Environment;
+import com.muyoucai.framework.LzyEnvironment;
 import com.muyoucai.framework.Settings;
 import com.muyoucai.framework.annotation.Autowired;
-import com.muyoucai.framework.annotation.Component;
+import com.muyoucai.framework.annotation.LzyComponent;
 import com.muyoucai.repository.SystemConfigRepository;
 import com.muyoucai.util.BeanKit;
 import com.muyoucai.util.FileKit;
@@ -22,11 +22,11 @@ import java.util.List;
  * @Date 2020/4/4 16:24
  * @Version 1.0
  **/
-@Component
+@LzyComponent
 public class SystemConfigService {
 
     @Autowired
-    private Environment env;
+    private LzyEnvironment env;
 
     @Autowired
     private SystemConfigRepository scRepository;

@@ -1,11 +1,14 @@
 package com.muyoucai.config;
 
-import com.muyoucai.framework.annotation.Bean;
-import com.muyoucai.framework.annotation.Configuration;
+import com.muyoucai.framework.annotation.LzyBean;
+import com.muyoucai.framework.annotation.LzyConfiguration;
 import com.muyoucai.framework.annotation.Autowired;
-import com.muyoucai.framework.Environment;
+import com.muyoucai.framework.LzyEnvironment;
+import com.muyoucai.storage.DataSourceFactory;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
+import org.hibernate.SessionFactory;
+
 
 /**
  * @Description
@@ -13,14 +16,14 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
  * @Date 2020/3/31 22:45
  * @Version 1.0
  **/
-@Configuration
+@LzyConfiguration
 public class AppConfig {
 
     @Autowired
-    private Environment env;
+    private LzyEnvironment env;
 
-    @Bean
-    public CredentialsProvider credentialsProvider(){
+    @LzyBean
+    public CredentialsProvider credentialsProvider() {
         return new UsernamePasswordCredentialsProvider(env.getString("git.user"), env.getString("git.pass"));
     }
 

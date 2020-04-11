@@ -1,6 +1,5 @@
 package com.muyoucai.framework;
 
-import com.muyoucai.framework.annotation.Bean;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;

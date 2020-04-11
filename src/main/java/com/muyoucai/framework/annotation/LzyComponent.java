@@ -8,11 +8,11 @@ import java.lang.annotation.Target;
 /**
  * @Description
  * @Author lzy
- * @Date 2020/3/31 21:39
+ * @Date 2020/4/1 22:47
  * @Version 1.0
  **/
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD})
-public @interface Value {
-    String value();
+@Target({ElementType.TYPE})
+public @interface LzyComponent {
+    String name() default "";
 }

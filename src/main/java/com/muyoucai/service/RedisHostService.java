@@ -1,9 +1,8 @@
 package com.muyoucai.service;
 
-import com.google.common.collect.Lists;
 import com.muyoucai.entity.po.RedisHost;
 import com.muyoucai.framework.annotation.Autowired;
-import com.muyoucai.framework.annotation.Component;
+import com.muyoucai.framework.annotation.LzyComponent;
 import com.muyoucai.repository.RedisHostRepository;
 import com.muyoucai.util.BeanKit;
 
@@ -15,7 +14,7 @@ import java.util.List;
  * @Date 2020/4/4 15:58
  * @Version 1.0
  **/
-@Component
+@LzyComponent
 public class RedisHostService {
 
     @Autowired

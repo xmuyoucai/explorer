@@ -1,6 +1,6 @@
 package com.muyoucai.framework;
 
-import com.muyoucai.framework.annotation.Bean;
+import com.muyoucai.framework.annotation.LzyBean;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -18,7 +18,7 @@ public class MyMethodInterceptor implements MethodInterceptor {
 
     @Override
     public Object intercept(Object beanProxy, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
-        if(method.getAnnotation(Bean.class) != null) {
+        if(method.getAnnotation(LzyBean.class) != null) {
             if(ApplicationContext.containsBean(method.getReturnType())){
                 log.info("Direct return cached bean : {}", method.getReturnType().getCanonicalName());
                 return ApplicationContext.getBean(method.getReturnType());

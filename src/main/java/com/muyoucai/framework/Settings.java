@@ -1,11 +1,6 @@
 package com.muyoucai.framework;
 
-import com.muyoucai.framework.annotation.Bean;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 /**
  * @Description

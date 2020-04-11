@@ -61,7 +61,7 @@ public class ReflectKit {
 
     public static <T> T newInstance(Class<T> clz){
         try {
-            log.info("Bean instanced : {}", clz.getCanonicalName());
+            log.info("LzyBean instanced : {}", clz.getCanonicalName());
             return clz.newInstance();
         } catch (Exception e) {
             log.error("", e);
@@ -71,7 +71,7 @@ public class ReflectKit {
 
     public static Object creationInvoke(Method creation, Object o){
         try {
-            log.info("Bean created : {} ({}, {})", creation.getReturnType().getCanonicalName(), creation, o);
+            log.info("LzyBean created : {} ({}, {})", creation.getReturnType().getCanonicalName(), creation, o);
             return creation.invoke(o);
         } catch (Exception e) {
             log.error("", e);

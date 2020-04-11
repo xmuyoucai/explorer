@@ -17,11 +17,11 @@ import java.lang.reflect.Method;
 public class BeanDefinition {
 
     /**
-     * Bean Name
+     * LzyBean Name
      */
     private String name;
     /**
-     * Bean Class
+     * LzyBean Class
      */
     private Class<?> clz;
     /**
@@ -29,11 +29,11 @@ public class BeanDefinition {
      */
     private Class<?> fromClz;
     /**
-     * Bean Method of Creation
+     * LzyBean Method of Creation
      */
     private Method creation;
     /**
-     * Bean Instance
+     * LzyBean Instance
      */
     private Object bean;
 

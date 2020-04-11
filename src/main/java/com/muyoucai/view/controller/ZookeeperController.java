@@ -5,22 +5,16 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.muyoucai.framework.ApplicationContext;
-import com.muyoucai.framework.Environment;
-import com.muyoucai.framework.Settings;
+import com.muyoucai.framework.LzyEnvironment;
 import com.muyoucai.manager.Zoo;
 import com.muyoucai.view.FxUtils;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.CheckBoxTreeTableCell;
-import javafx.scene.control.cell.TextFieldTreeCell;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
-import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Callback;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +48,7 @@ public class ZookeeperController implements Initializable {
 
             Zoo.Node basic = new Zoo.Node();
 
-            String zooServers = ApplicationContext.getBean(Environment.class).getString("zoo.servers");
+            String zooServers = ApplicationContext.getBean(LzyEnvironment.class).getString("zoo.servers");
             if (!Strings.isNullOrEmpty(zooServers)) {
                 for (String address : zooServers.split(",")) {
                     basic.getChildren().add(new Zoo(address).getData());

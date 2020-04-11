@@ -8,20 +8,19 @@ import com.muyoucai.service.RedisHostService;
 import com.muyoucai.util.CollectionKit;
 import com.muyoucai.util.DateUtils;
 import com.muyoucai.view.FxUtils;
-import com.muyoucai.view.custom.RedisKeyTableCell;
 import com.muyoucai.view.dialogs.DialogForCreateRedisHost;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -55,7 +54,7 @@ public class RedisController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        log.debug("Redis界面控制器初始化 ...");
+        log.info("Redis界面控制器初始化 ...");
         this.rsService = ApplicationContext.getBean(RedisHostService.class);
         this.refreshHostsList();
         this.initSectionsList();
@@ -63,6 +62,22 @@ public class RedisController implements Initializable {
         this.refreshRedisServerInfoList();
         this.initializeTVD();
         this.initializeTVS();
+//        try (SqlSession sqlSession = ApplicationContext.getBean(SqlSessionFactory.class).openSession()) {
+//            RedisHostMapper mapper = sqlSession.getMapper(RedisHostMapper.class);
+//            System.out.println("------------------ : " + mapper.select1());
+//            System.out.println("------------------ : " + mapper.selectList(new QueryWrapper<>()));
+//        }
+
+
+        try (
+                SessionFactory sessionFactory = ApplicationContext.getBean(SessionFactory.class);
+                Session session = sessionFactory.openSession();
+        ) {
+            com.muyoucai.storage.entity.RedisHost rh = new com.muyoucai.storage.entity.RedisHost();
+            rh.setHost("111");
+            session.save(rh);
+            System.out.println(session.get(com.muyoucai.storage.entity.RedisHost.class, 1).getHost());;
+        }
     }
 
     private void initializeTVD() {
@@ -103,11 +118,13 @@ public class RedisController implements Initializable {
     public void refreshSectionsList() {
         sectionsBox.getItems().clear();
         RJedis rJedis = createJedis();
-        List<RJedis.RedisServerInfoItem> items = rJedis.info2();
-        if (!CollectionKit.isEmpty(items)) {
-            sectionsBox.getItems().addAll(FXCollections.observableArrayList(items.stream().map(i -> i.getSection()).distinct().collect(Collectors.toList())));
-            if (sectionsBox.getSelectionModel().isEmpty()) {
-                sectionsBox.getSelectionModel().selectFirst();
+        if (rJedis != null) {
+            List<RJedis.RedisServerInfoItem> items = rJedis.info2();
+            if (!CollectionKit.isEmpty(items)) {
+                sectionsBox.getItems().addAll(FXCollections.observableArrayList(items.stream().map(i -> i.getSection()).distinct().collect(Collectors.toList())));
+                if (sectionsBox.getSelectionModel().isEmpty()) {
+                    sectionsBox.getSelectionModel().selectFirst();
+                }
             }
         }
     }
@@ -115,7 +132,9 @@ public class RedisController implements Initializable {
     private void refreshRedisDataList(String pattern) {
         if (hostsBox.getSelectionModel().getSelectedItem() != null) {
             RJedis rJedis = createJedis();
-            tvDa.setItems(FXCollections.observableArrayList(rJedis.values(pattern)));
+            if (rJedis != null) {
+                tvDa.setItems(FXCollections.observableArrayList(rJedis.values(pattern)));
+            }
         }
     }
 
@@ -123,8 +142,10 @@ public class RedisController implements Initializable {
         String section = sectionsBox.getSelectionModel().getSelectedItem();
         if (section != null) {
             RJedis rJedis = createJedis();
-            List<RJedis.RedisServerInfoItem> items = rJedis.info2();
-            tvSi.setItems(FXCollections.observableArrayList(items.stream().filter(i -> i.getSection().equals(section)).collect(Collectors.toList())));
+            if (rJedis != null) {
+                List<RJedis.RedisServerInfoItem> items = rJedis.info2();
+                tvSi.setItems(FXCollections.observableArrayList(items.stream().filter(i -> i.getSection().equals(section)).collect(Collectors.toList())));
+            }
         }
     }
 
@@ -152,7 +173,7 @@ public class RedisController implements Initializable {
     }
 
     private TableColumn<RJedis.RedisServerInfoItem, String> createTVSColumnForValue() {
-        TableColumn<RJedis.RedisServerInfoItem, String> column = new TableColumn<>("Value");
+        TableColumn<RJedis.RedisServerInfoItem, String> column = new TableColumn<>("LzyValue");
         column.setPrefWidth(880);
         column.setSortable(true);
         column.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getValue()));
@@ -190,8 +211,11 @@ public class RedisController implements Initializable {
     }
 
     private RJedis createJedis() {
-        RedisHost item = rsService.get(hostsBox.getSelectionModel().getSelectedItem().toString());
-        return new RJedis(item.getHost(), Integer.parseInt(item.getPort()), item.getPass());
+        if (!hostsBox.getSelectionModel().isEmpty()) {
+            RedisHost item = rsService.get(hostsBox.getSelectionModel().getSelectedItem().toString());
+            return new RJedis(item.getHost(), Integer.parseInt(item.getPort()), item.getPass());
+        }
+        return null;
     }
 
     private void log(String msg) {
@@ -239,24 +263,27 @@ public class RedisController implements Initializable {
     }
 
     public void actionExecute(ActionEvent event) {
-
+        RJedis rJedis = createJedis();
+        if (rJedis == null) {
+            return;
+        }
         String params = tfParams.getText().trim();
-        if(Strings.isNullOrEmpty(params)){
+        if (Strings.isNullOrEmpty(params)) {
             log("请求输入执行参数\n");
             return;
         }
 
         String opt = operationsBox.getSelectionModel().getSelectedItem();
-        if(RJedis.RedisOperation.set.name().equals(opt)){
+        if (RJedis.RedisOperation.set.name().equals(opt)) {
             String[] paramArr = params.split("\\s+");
-            if(paramArr.length < 2 || paramArr.length > 5){
+            if (paramArr.length < 2 || paramArr.length > 5) {
                 log(String.format("参数错误：%s\n", params));
                 return;
             }
-            if(paramArr.length == 2){
+            if (paramArr.length == 2) {
 
             }
-            log(String.format("执行语句：[ set %s %s ]，执行结果：%s\n", paramArr[0], paramArr[1], createJedis().set(paramArr[0], paramArr[1])));
+            log(String.format("执行语句：[ set %s %s ]，执行结果：%s\n", paramArr[0], paramArr[1], rJedis.set(paramArr[0], paramArr[1])));
             return;
         }
 

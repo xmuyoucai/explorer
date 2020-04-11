@@ -3,8 +3,7 @@ package com.muyoucai.framework.storage;
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.muyoucai.framework.Environment;
-import com.muyoucai.framework.ReflectKit;
+import com.muyoucai.framework.LzyEnvironment;
 import com.muyoucai.framework.annotation.Autowired;
 import com.muyoucai.framework.annotation.GitFile;
 import com.muyoucai.util.FileKit;
@@ -29,7 +28,7 @@ public abstract class GitStorage<T> implements Storage<T> {
     protected CredentialsProvider credentialsProvider;
 
     @Autowired
-    protected Environment env;
+    protected LzyEnvironment env;
 
     public List<T> list(){
         // GitUtils.pull(gitDir, credentialsProvider);
