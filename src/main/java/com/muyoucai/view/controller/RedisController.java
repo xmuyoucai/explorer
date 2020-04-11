@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
 import com.muyoucai.entity.po.RedisHost;
 import com.muyoucai.framework.ApplicationContext;
+import com.muyoucai.framework.annotation.LzyAutowired;
 import com.muyoucai.manager.RJedis;
 import com.muyoucai.service.RedisHostService;
+import com.muyoucai.storage.LzyHibernate;
 import com.muyoucai.storage.mapper.RedisHostMapper;
 import com.muyoucai.util.CollectionKit;
 import com.muyoucai.util.DateUtils;
@@ -66,31 +68,11 @@ public class RedisController implements Initializable {
         this.refreshRedisServerInfoList();
         this.initializeTVD();
         this.initializeTVS();
-//        try (SqlSession sqlSession = ApplicationContext.getBean(SqlSessionFactory.class).openSession()) {
-//            RedisHostMapper mapper = sqlSession.getMapper(RedisHostMapper.class);
-//            System.out.println("------------------ : " + mapper.select1());
-//            System.out.println("------------------ : " + mapper.selectList(new QueryWrapper<>()));
-//        }
 
-
-
-        try (
-                SessionFactory sessionFactory = ApplicationContext.getBean(SessionFactory.class);
-                Session session = sessionFactory.openSession();
-        ) {
-            com.muyoucai.storage.entity.RedisHost rh = new com.muyoucai.storage.entity.RedisHost();
-            rh.setHost("111");
-            session.save(rh);
-
-            com.muyoucai.storage.entity.RedisHost e = session.get(com.muyoucai.storage.entity.RedisHost.class, 1);
-            System.out.println("hibernate1 : " + JSON.toJSONString(e));
-        }
-        SqlSessionFactory sqlSessionFactory = ApplicationContext.getBean(SqlSessionFactory.class);
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            RedisHostMapper mapper = sqlSession.getMapper(RedisHostMapper.class);
-            com.muyoucai.storage.entity.RedisHost entity = mapper.selectById(1);
-            System.out.println("mybatis : " + JSON.toJSONString(entity));
-        }
+        // TEST
+        LzyHibernate lzyHibernate = ApplicationContext.getBean(LzyHibernate.class);
+        lzyHibernate.testInsert();
+        lzyHibernate.testQuery();
     }
 
     private void initializeTVD() {

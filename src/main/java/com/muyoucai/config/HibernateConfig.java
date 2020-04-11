@@ -4,6 +4,7 @@ import com.muyoucai.framework.annotation.LzyAutowired;
 import com.muyoucai.framework.annotation.LzyBean;
 import com.muyoucai.framework.annotation.LzyConfiguration;
 import com.muyoucai.storage.LzyDataSource;
+import com.muyoucai.storage.LzyHibernate;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -16,10 +17,10 @@ public class HibernateConfig {
     private LzyDataSource lzyDataSource;
 
     @LzyBean
-    public SessionFactory sessionFactory(){
-        Configuration configuration = new Configuration();
-        configuration.setProperties(properties());
-        return configuration.configure().buildSessionFactory();
+    public LzyHibernate lzyHibernate(){
+        LzyHibernate lzyHibernate;
+        (lzyHibernate = new LzyHibernate(lzyDataSource, properties())).initialize();
+        return lzyHibernate;
     }
 
     private Properties properties() {
