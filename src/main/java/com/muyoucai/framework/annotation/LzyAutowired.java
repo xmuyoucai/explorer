@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
-public @interface Autowired {
+public @interface LzyAutowired {
 
     String name() default "";
 

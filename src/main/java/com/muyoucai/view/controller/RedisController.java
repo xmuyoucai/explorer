@@ -1,10 +1,12 @@
 package com.muyoucai.view.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
 import com.muyoucai.entity.po.RedisHost;
 import com.muyoucai.framework.ApplicationContext;
 import com.muyoucai.manager.RJedis;
 import com.muyoucai.service.RedisHostService;
+import com.muyoucai.storage.mapper.RedisHostMapper;
 import com.muyoucai.util.CollectionKit;
 import com.muyoucai.util.DateUtils;
 import com.muyoucai.view.FxUtils;
@@ -19,6 +21,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -69,6 +73,7 @@ public class RedisController implements Initializable {
 //        }
 
 
+
         try (
                 SessionFactory sessionFactory = ApplicationContext.getBean(SessionFactory.class);
                 Session session = sessionFactory.openSession();
@@ -76,7 +81,15 @@ public class RedisController implements Initializable {
             com.muyoucai.storage.entity.RedisHost rh = new com.muyoucai.storage.entity.RedisHost();
             rh.setHost("111");
             session.save(rh);
-            System.out.println(session.get(com.muyoucai.storage.entity.RedisHost.class, 1).getHost());;
+
+            com.muyoucai.storage.entity.RedisHost e = session.get(com.muyoucai.storage.entity.RedisHost.class, 1);
+            System.out.println("hibernate1 : " + JSON.toJSONString(e));
+        }
+        SqlSessionFactory sqlSessionFactory = ApplicationContext.getBean(SqlSessionFactory.class);
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            RedisHostMapper mapper = sqlSession.getMapper(RedisHostMapper.class);
+            com.muyoucai.storage.entity.RedisHost entity = mapper.selectById(1);
+            System.out.println("mybatis : " + JSON.toJSONString(entity));
         }
     }
 

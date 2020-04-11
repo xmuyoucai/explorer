@@ -1,7 +1,7 @@
 package com.muyoucai.service;
 
 import com.muyoucai.entity.po.RedisHost;
-import com.muyoucai.framework.annotation.Autowired;
+import com.muyoucai.framework.annotation.LzyAutowired;
 import com.muyoucai.framework.annotation.LzyComponent;
 import com.muyoucai.repository.RedisHostRepository;
 import com.muyoucai.util.BeanKit;
@@ -17,7 +17,7 @@ import java.util.List;
 @LzyComponent
 public class RedisHostService {
 
-    @Autowired
+    @LzyAutowired
     private RedisHostRepository repository;
 
     public List<RedisHost> list(){

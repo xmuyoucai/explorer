@@ -4,11 +4,11 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.muyoucai.framework.annotation.LzyAutowired;
 import com.muyoucai.framework.annotation.LzyBean;
 import com.muyoucai.framework.annotation.LzyConfiguration;
 import com.muyoucai.util.CollectionKit;
 import com.muyoucai.util.ex.*;
-import com.muyoucai.framework.annotation.Autowired;
 import com.muyoucai.framework.annotation.LzyComponent;
 import lombok.extern.slf4j.Slf4j;
 
@@ -102,11 +102,11 @@ public class BeanFactory {
 
     private void autowire(Object bean, Class<?> clz, Set<Field> fields) {
         for (Field field : fields) {
-            // log.info("{} : {} : {} : {}", clz.getCanonicalName(), bean.getClass(), field.getName(), ReflectKit.has(Autowired.class, field));
-            if(!ReflectKit.has(Autowired.class, field)){
+            // log.info("{} : {} : {} : {}", clz.getCanonicalName(), bean.getClass(), field.getName(), ReflectKit.has(LzyAutowired.class, field));
+            if(!ReflectKit.has(LzyAutowired.class, field)){
                 continue;
             }
-            Autowired a = field.getAnnotation(Autowired.class);
+            LzyAutowired a = field.getAnnotation(LzyAutowired.class);
             if(!Strings.isNullOrEmpty(a.name())){
                 if(byNameDefinitions.containsKey(a.name())){
                     BeanDefinition def = byNameDefinitions.get(a.name());

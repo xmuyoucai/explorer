@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import com.muyoucai.entity.po.SystemConfig;
 import com.muyoucai.framework.LzyEnvironment;
 import com.muyoucai.framework.Settings;
-import com.muyoucai.framework.annotation.Autowired;
+import com.muyoucai.framework.annotation.LzyAutowired;
 import com.muyoucai.framework.annotation.LzyComponent;
 import com.muyoucai.repository.SystemConfigRepository;
 import com.muyoucai.util.BeanKit;
@@ -25,13 +25,13 @@ import java.util.List;
 @LzyComponent
 public class SystemConfigService {
 
-    @Autowired
+    @LzyAutowired
     private LzyEnvironment env;
 
-    @Autowired
+    @LzyAutowired
     private SystemConfigRepository scRepository;
 
-    @Autowired
+    @LzyAutowired
     private CredentialsProvider credentialsProvider;
 
     public List<SystemConfig> list(){

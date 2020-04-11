@@ -1,6 +1,8 @@
 package com.muyoucai.storage.entity;
 
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +15,7 @@ import javax.persistence.*;
 public class RedisHost {
 
     @Id
+    @TableId(value = "id", type = IdType.AUTO)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     @Column(name = "host")

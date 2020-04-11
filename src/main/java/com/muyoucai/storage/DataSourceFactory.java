@@ -5,12 +5,12 @@ import javax.sql.DataSource;
 
 public class DataSourceFactory {
 
-    public DataSource getDataSource() {
+    public DataSource getDataSource(LzyDataSource lzyDataSource) {
         DruidDataSource datasource = new DruidDataSource();
-        datasource.setUrl("jdbc:h2:~/test");
-        datasource.setUsername("lzy");
-        datasource.setPassword("123456");
-        datasource.setDriverClassName("org.h2.Driver");
+        datasource.setUrl(lzyDataSource.getUrl());
+        datasource.setUsername(lzyDataSource.getUser());
+        datasource.setPassword(lzyDataSource.getPass());
+        datasource.setDriverClassName(lzyDataSource.getDriver());
         datasource.setInitialSize(1);
         datasource.setMinIdle(1);
         datasource.setMaxActive(20);
