@@ -2,6 +2,7 @@ package com.muyoucai.config;
 
 import com.muyoucai.framework.annotation.LzyBean;
 import com.muyoucai.framework.annotation.LzyConfiguration;
+import com.muyoucai.storage.entity.RedisHost;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -14,6 +15,7 @@ public class HibernateConfig {
     public SessionFactory sessionFactory(){
         Configuration configuration = new Configuration();
         configuration.setProperties(properties());
+        // configuration.addClass(RedisHost.class);
         return configuration.configure().buildSessionFactory();
     }
 

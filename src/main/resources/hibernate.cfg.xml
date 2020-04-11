@@ -4,12 +4,6 @@
         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-        <!--不采用InnoDB方式加快速度 -->
-        <!--<property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>-->
-
-        <!-- 注意update方式时对于属性的删减并不会删除数据库字段 -->
-        <!--<property name="hibernate.hbm2ddl.auto">create</property>-->
-
         <!-- 注意注解的话，只能用class一个一个引用。除非与Spring整合才能扫描文件夹路径 -->
         <mapping class="com.muyoucai.storage.entity.RedisHost" />
     </session-factory>
