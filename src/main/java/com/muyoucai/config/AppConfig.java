@@ -28,7 +28,7 @@ public class AppConfig {
 
     @LzyBean
     public LzyDataSource lzyDataSource(){
-        return LzyDataSource.builder().url("jdbc:h2:file:~/.h2/epl;FILE_LOCK=SOCKET").driver("org.h2.Driver").user("lzy").pass("123456").build();
+        return LzyDataSource.builder().url("jdbc:h2:mem:epl;").driver("org.h2.Driver").user("lzy").pass("123456").build();
     }
 
 }
