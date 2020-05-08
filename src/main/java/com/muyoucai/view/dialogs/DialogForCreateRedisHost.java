@@ -3,9 +3,10 @@ package com.muyoucai.view.dialogs;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
-import com.muyoucai.entity.po.RedisHost;
+import com.muyoucai.entity.po.RedisHost3;
 import com.muyoucai.framework.ApplicationContext;
 import com.muyoucai.service.RedisHostService;
+import com.muyoucai.storage.ILzyStorage;
 import com.muyoucai.view.FxUtils;
 import com.muyoucai.view.controller.RedisController;
 import javafx.event.ActionEvent;
@@ -44,7 +45,7 @@ public class DialogForCreateRedisHost extends Dialog {
         PasswordField passTF = FxUtils.newPF("Password", "");
         pane.getChildren().add(passTF);
 
-        Dialog<RedisHost> dialog = new Dialog<>();
+        Dialog<RedisHost3> dialog = new Dialog<>();
         dialog.setTitle("添加");
         dialog.setResizable(true);
         dialog.getDialogPane().setContent(pane);
@@ -80,16 +81,16 @@ public class DialogForCreateRedisHost extends Dialog {
                 if (!Strings.isNullOrEmpty(nameTF.getText())
                         && !Strings.isNullOrEmpty(hostTF.getText())
                         && !Strings.isNullOrEmpty(portTF.getText())) {
-                    return new RedisHost(nameTF.getText(), hostTF.getText(), portTF.getText(), passTF.getText());
+                    return new RedisHost3(nameTF.getText(), hostTF.getText(), portTF.getText(), passTF.getText());
                 }
             }
             return null;
         });
 
-        Optional<RedisHost> result = dialog.showAndWait();
+        Optional<RedisHost3> result = dialog.showAndWait();
         if (result.isPresent()) {
             log.info(JSON.toJSONString(result));
-            ApplicationContext.getBean(RedisHostService.class).saveOrUpdate(result.get());
+            ApplicationContext.getBean(ILzyStorage.class).getRedisHostStorage().addRedisHost(result.get().getHost(), Integer.parseInt(result.get().getPort()), result.get().getPass());
             controller.refreshHostsList();
             FxUtils.info("添加成功");
         }

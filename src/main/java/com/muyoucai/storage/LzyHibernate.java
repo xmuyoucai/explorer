@@ -1,7 +1,7 @@
 package com.muyoucai.storage;
 
 import com.alibaba.fastjson.JSON;
-import com.muyoucai.storage.entity.Setting;
+import com.muyoucai.storage.entity.Setting2;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -34,7 +34,7 @@ public class LzyHibernate {
     public void testInsert() {
         try (SessionFactory sessionFactory = configuration().configure().buildSessionFactory();
              Session session = sessionFactory.openSession()) {
-            Setting entity = new Setting();
+            Setting2 entity = new Setting2();
             entity.setKey("test");
             entity.setValue("test");
             session.save(entity);
@@ -45,7 +45,7 @@ public class LzyHibernate {
     public void testQuery(){
         try (SessionFactory sessionFactory = configuration().configure().buildSessionFactory();
              Session session = sessionFactory.openSession()) {
-            Setting entity = session.get(Setting.class, "test");
+            Setting2 entity = session.get(Setting2.class, "test");
             log.info("hibernate test query a setting entry : {}", JSON.toJSONString(entity));
         }
     }

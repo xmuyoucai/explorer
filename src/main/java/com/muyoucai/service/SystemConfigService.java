@@ -2,7 +2,7 @@ package com.muyoucai.service;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
-import com.muyoucai.entity.po.SystemConfig;
+import com.muyoucai.entity.po.SystemConfig2;
 import com.muyoucai.framework.LzyEnvironment;
 import com.muyoucai.framework.Settings;
 import com.muyoucai.framework.annotation.LzyAutowired;
@@ -34,12 +34,12 @@ public class SystemConfigService {
     @LzyAutowired
     private CredentialsProvider credentialsProvider;
 
-    public List<SystemConfig> list(){
+    public List<SystemConfig2> list(){
         return scRepository.list();
     }
 
-    public SystemConfig get(String key){
-        for (SystemConfig sc : list()) {
+    public SystemConfig2 get(String key){
+        for (SystemConfig2 sc : list()) {
             if(sc.getKey().equals(key)){
                 return sc;
             }
@@ -47,8 +47,8 @@ public class SystemConfigService {
         return null;
     }
 
-    public SystemConfig get(String key, List<SystemConfig> list){
-        for (SystemConfig sc : list) {
+    public SystemConfig2 get(String key, List<SystemConfig2> list){
+        for (SystemConfig2 sc : list) {
             if(sc.getKey().equals(key)){
                 return sc;
             }
@@ -60,13 +60,13 @@ public class SystemConfigService {
         return get(key) != null;
     }
 
-    public void saveOrUpdate(SystemConfig sc){
+    public void saveOrUpdate(SystemConfig2 sc){
         System.out.println(JSON.toJSONString(sc));
-        List<SystemConfig> list = list();
+        List<SystemConfig2> list = list();
         if(!exists(sc.getKey())){
             list.add(sc);
         } else {
-            SystemConfig entity = get(sc.getKey(), list);
+            SystemConfig2 entity = get(sc.getKey(), list);
             BeanKit.copy(sc, entity);
         }
         System.out.println(JSON.toJSONString(list));
@@ -83,10 +83,10 @@ public class SystemConfigService {
         String statusF = String.format("%s/%s", baseD, Settings.STATUS_FILENAME);
         if(!FileKit.exists(statusF)){
             FileKit.safelyCreateFile(statusF);
-            StreamKit.write(JSON.toJSONString(Lists.newArrayList(new SystemConfig(ConfigKey.STORAGE_INITIALIZED.name(), String.valueOf(false)))), statusF);
+            StreamKit.write(JSON.toJSONString(Lists.newArrayList(new SystemConfig2(ConfigKey.STORAGE_INITIALIZED.name(), String.valueOf(false)))), statusF);
         }
         // 读取状态文件
-        SystemConfig sc = get(ConfigKey.STORAGE_INITIALIZED.name());
+        SystemConfig2 sc = get(ConfigKey.STORAGE_INITIALIZED.name());
         if(!Boolean.valueOf(sc.getValue())){
             String absolutelyGitDir = String.format("%s/%s", baseD, env.get("git.dir"));
             GitUtils.create(absolutelyGitDir, env.get("git.uri"), credentialsProvider);

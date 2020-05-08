@@ -5,7 +5,7 @@
 <hibernate-configuration>
     <session-factory>
         <!-- 注意注解的话，只能用class一个一个引用。除非与Spring整合才能扫描文件夹路径 -->
-        <mapping class="com.muyoucai.storage.entity.RedisHost" />
-        <mapping class="com.muyoucai.storage.entity.Setting" />
+        <mapping class="com.muyoucai.storage.entity.RedisHost2" />
+        <mapping class="com.muyoucai.storage.entity.Setting2" />
     </session-factory>
 </hibernate-configuration>

@@ -1,14 +1,13 @@
 package com.muyoucai.view.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
-import com.muyoucai.entity.po.RedisHost;
+import com.muyoucai.entity.po.RedisHost3;
 import com.muyoucai.framework.ApplicationContext;
-import com.muyoucai.framework.annotation.LzyAutowired;
 import com.muyoucai.manager.RJedis;
 import com.muyoucai.service.RedisHostService;
+import com.muyoucai.storage.ILzyStorage;
 import com.muyoucai.storage.LzyHibernate;
-import com.muyoucai.storage.mapper.RedisHostMapper;
+import com.muyoucai.storage.entity.RedisHost;
 import com.muyoucai.util.CollectionKit;
 import com.muyoucai.util.DateUtils;
 import com.muyoucai.view.FxUtils;
@@ -23,10 +22,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -56,12 +51,12 @@ public class RedisController implements Initializable {
     @FXML
     private ComboBox<String> sectionsBox;
 
-    private RedisHostService rsService;
+    private ILzyStorage lzyStorage;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         log.info("Redis界面控制器初始化 ...");
-        this.rsService = ApplicationContext.getBean(RedisHostService.class);
+        this.lzyStorage = ApplicationContext.getBean(ILzyStorage.class);
         this.refreshHostsList();
         this.initSectionsList();
         this.initOperationsList();
@@ -103,9 +98,9 @@ public class RedisController implements Initializable {
 
     public void refreshHostsList() {
         hostsBox.getItems().clear();
-        List<RedisHost> items = rsService.list();
+        List<RedisHost> items = lzyStorage.getRedisHostStorage().listRedisHost();
         if (!CollectionKit.isEmpty(items)) {
-            hostsBox.getItems().addAll(FXCollections.observableArrayList(items.stream().map(i -> i.getName()).collect(Collectors.toList())));
+            hostsBox.getItems().addAll(FXCollections.observableArrayList(items.stream().map(i -> i.key()).collect(Collectors.toList())));
             hostsBox.getSelectionModel().selectFirst();
         }
     }
@@ -207,7 +202,7 @@ public class RedisController implements Initializable {
 
     private RJedis createJedis() {
         if (!hostsBox.getSelectionModel().isEmpty()) {
-            RedisHost item = rsService.get(hostsBox.getSelectionModel().getSelectedItem().toString());
+            RedisHost item = lzyStorage.getRedisHostStorage().getRedisHost(hostsBox.getSelectionModel().getSelectedItem());
             return new RJedis(item.getHost(), Integer.parseInt(item.getPort()), item.getPass());
         }
         return null;
@@ -238,7 +233,7 @@ public class RedisController implements Initializable {
      */
     public void actionDeleteRedisServerItem(ActionEvent event) {
         if (hostsBox.getSelectionModel().getSelectedItem() != null) {
-            rsService.del(hostsBox.getSelectionModel().getSelectedItem().toString());
+            lzyStorage.getRedisHostStorage().removeRedisHost(hostsBox.getSelectionModel().getSelectedItem());
         }
         refreshHostsList();
         FxUtils.info("删除成功");

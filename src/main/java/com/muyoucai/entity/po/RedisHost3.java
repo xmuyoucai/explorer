@@ -17,7 +17,7 @@ import java.util.List;
 @GitFile
 @NoArgsConstructor
 @AllArgsConstructor
-public class RedisHost {
+public class RedisHost3 {
 
     @Setter
     @Getter

@@ -18,7 +18,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SystemConfig {
+public class SystemConfig2 {
 
     private String key;
 

@@ -1,6 +1,6 @@
 package com.muyoucai.repository;
 
-import com.muyoucai.entity.po.RedisHost;
+import com.muyoucai.entity.po.RedisHost3;
 import com.muyoucai.framework.annotation.LzyComponent;
 import com.muyoucai.framework.storage.GitStorage;
 
@@ -11,9 +11,9 @@ import com.muyoucai.framework.storage.GitStorage;
  * @Version 1.0
  **/
 @LzyComponent
-public class RedisHostRepository extends GitStorage<RedisHost> {
+public class RedisHostRepository extends GitStorage<RedisHost3> {
     @Override
-    public Class<RedisHost> getEntityClass() {
-        return RedisHost.class;
+    public Class<RedisHost3> getEntityClass() {
+        return RedisHost3.class;
     }
 }

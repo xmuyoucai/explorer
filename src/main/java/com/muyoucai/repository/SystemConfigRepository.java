@@ -1,6 +1,6 @@
 package com.muyoucai.repository;
 
-import com.muyoucai.entity.po.SystemConfig;
+import com.muyoucai.entity.po.SystemConfig2;
 import com.muyoucai.framework.annotation.LzyComponent;
 import com.muyoucai.framework.storage.FileStorage;
 
@@ -11,10 +11,10 @@ import com.muyoucai.framework.storage.FileStorage;
  * @Version 1.0
  **/
 @LzyComponent
-public class SystemConfigRepository extends FileStorage<SystemConfig> {
+public class SystemConfigRepository extends FileStorage<SystemConfig2> {
     @Override
-    public Class<SystemConfig> getEntityClass() {
-        return SystemConfig.class;
+    public Class<SystemConfig2> getEntityClass() {
+        return SystemConfig2.class;
     }
 
 }

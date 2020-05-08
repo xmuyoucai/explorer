@@ -22,8 +22,6 @@ public class ApplicationContext {
         beanFactory = new BeanFactory("com.muyoucai");
         beanFactory.createAllBeans();
         beanFactory.displayAllBeans();
-
-        getBean(SystemConfigService.class).initialize();
     }
 
     public static boolean containsBean(Class<?> clz) {
